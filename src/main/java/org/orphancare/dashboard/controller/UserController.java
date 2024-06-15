@@ -1,38 +1,38 @@
 package org.orphancare.dashboard.controller;
 
-import org.orphancare.dashboard.entity.User;
+import lombok.RequiredArgsConstructor;
+import org.orphancare.dashboard.dto.PaginatedResponse;
+import org.orphancare.dashboard.dto.UserRequestDto;
+import org.orphancare.dashboard.dto.UserResponseDto;
 import org.orphancare.dashboard.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public PaginatedResponse<UserResponseDto> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return userService.getAllUsers(page, size);
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable UUID id) {
+    public UserResponseDto getUserById(@PathVariable UUID id) {
         return userService.getUserById(id);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponseDto createUser(@RequestBody UserRequestDto userDto) {
+        return userService.createUser(userDto);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
+    public UserResponseDto updateUser(@PathVariable UUID id, @RequestBody UserRequestDto userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
