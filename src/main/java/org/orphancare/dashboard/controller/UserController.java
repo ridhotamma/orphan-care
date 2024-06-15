@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.dto.UserRequestDto;
@@ -27,12 +28,12 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponseDto createUser(@RequestBody UserRequestDto userDto) {
+    public UserResponseDto createUser(@Valid @RequestBody UserRequestDto userDto) {
         return userService.createUser(userDto);
     }
 
     @PutMapping("/{id}")
-    public UserResponseDto updateUser(@PathVariable UUID id, @RequestBody UserRequestDto userDetails) {
+    public UserResponseDto updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequestDto userDetails) {
         return userService.updateUser(id, userDetails);
     }
 

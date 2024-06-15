@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.dto.UserRequestDto;
 import org.orphancare.dashboard.dto.UserResponseDto;
+import org.orphancare.dashboard.entity.Role;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
+import org.orphancare.dashboard.repository.RoleRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,8 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     public PaginatedResponse<UserResponseDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -56,7 +58,15 @@ public class UserService {
             throw new UserAlreadyExistsException("Username already exists: " + userDto.getUsername());
         }
 
+        Set<Role> roles = new HashSet<>();
+
+        for (String roleName : userDto.getRoles()) {
+            Optional<Role> role = roleRepository.findByRoleName(roleName);
+            role.ifPresent(roles::add);
+        }
+
         User user = new User();
+        user.setRoles(roles);
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setUsername(userDto.getUsername());
