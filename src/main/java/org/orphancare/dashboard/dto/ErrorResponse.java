@@ -1,4 +1,4 @@
-package org.orphancare.dashboard.exception;
+package org.orphancare.dashboard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
