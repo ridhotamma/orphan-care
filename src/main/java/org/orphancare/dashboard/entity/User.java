@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "t_users")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,4 +37,8 @@ public class User {
     @NotBlank
     @Column(nullable = false, unique = true)
     private String username;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 }
