@@ -100,28 +100,11 @@ public class UserService {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
 
-        Profile profile = user.getProfile();
-        ProfileResponseDto profileDto = null;
-        if (profile != null) {
-            profileDto = new ProfileResponseDto(
-                    profile.getId(),
-                    profile.getProfilePicture(),
-                    profile.getFullName(),
-                    profile.getBirthday(),
-                    profile.getBio(),
-                    profile.getAddress(),
-                    profile.getDocuments(),
-                    profile.getSchoolGrade(),
-                    profile.getSchoolType()
-            );
-        }
-
         return new UserResponseDto(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
-                roles,
-                profileDto
+                roles
         );
     }
 

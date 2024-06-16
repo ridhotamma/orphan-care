@@ -9,7 +9,7 @@ import org.orphancare.dashboard.entity.SchoolGrade;
 import org.orphancare.dashboard.entity.SchoolType;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,7 +23,7 @@ public class ProfileResponseDto {
     private Date birthday;
     private String bio;
     private Address address;
-    private Set<Document> documents;
+    private List<Document> documents;
     private SchoolGrade schoolGrade;
     private SchoolType schoolType;
 }
