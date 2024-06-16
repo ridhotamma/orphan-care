@@ -29,8 +29,11 @@ public class Document {
     @Size(max = 255)
     private String url;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
-}
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
+    @ManyToOne
+    @JoinColumn(name = "document_type_id", nullable = false)
+    private DocumentType documentType;
+}

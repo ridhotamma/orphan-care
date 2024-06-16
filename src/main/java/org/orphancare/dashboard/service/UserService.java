@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
-import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
 import org.orphancare.dashboard.repository.UserRepository;
@@ -45,32 +44,22 @@ public class UserService {
     }
 
     public UserResponseDto getUserById(UUID id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
+        User user = findUserById(id);
         return toResponseDto(user);
     }
 
     public UserResponseDto createUser(UserRequestDto userDto) {
         checkIfUserExists(userDto);
 
-        User user = new User();
-        user.setEmail(userDto.getEmail());
+        User user = buildUserFromRequestDto(userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setUsername(userDto.getUsername());
-        user.setRoles(userDto.getRoles().stream()
-                .map(RoleType::valueOf)
-                .collect(Collectors.toSet()));
-
-        Profile profile = new Profile();
-        user.setProfile(profile);
 
         User savedUser = userRepository.save(user);
         return toResponseDto(savedUser);
     }
 
     public UserResponseDto updateUser(UUID id, UserUpdateDto userDto) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
+        User user = findUserById(id);
 
         if (!user.getEmail().equals(userDto.getEmail()) && userRepository.existsByEmail(userDto.getEmail())) {
             throw new UserAlreadyExistsException("Email already exists: " + userDto.getEmail());
@@ -81,17 +70,14 @@ public class UserService {
 
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());
-        user.setRoles(userDto.getRoles().stream()
-                .map(RoleType::valueOf)
-                .collect(Collectors.toSet()));
+        user.setRoles(mapRoles(userDto.getRoles()));
 
         User updatedUser = userRepository.save(user);
         return toResponseDto(updatedUser);
     }
 
     public void deleteUser(UUID id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
+        User user = findUserById(id);
         userRepository.delete(user);
     }
 
@@ -115,5 +101,24 @@ public class UserService {
         if (userRepository.existsByUsername(userDto.getUsername())) {
             throw new UserAlreadyExistsException("Username already exists: " + userDto.getUsername());
         }
+    }
+
+    private User findUserById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
+    }
+
+    private User buildUserFromRequestDto(UserRequestDto userDto) {
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
+        user.setRoles(mapRoles(userDto.getRoles()));
+        return user;
+    }
+
+    private Set<RoleType> mapRoles(Set<String> roles) {
+        return roles.stream()
+                .map(RoleType::valueOf)
+                .collect(Collectors.toSet());
     }
 }

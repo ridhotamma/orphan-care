@@ -39,14 +39,18 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
-    private Profile profile;
-
     @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<RoleType> roles = new HashSet<>();
-}
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Profile profile;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive = true;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Document> documents = new HashSet<>();
+}
