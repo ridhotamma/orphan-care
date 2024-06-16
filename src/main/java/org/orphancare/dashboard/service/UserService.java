@@ -3,7 +3,6 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
