@@ -50,7 +50,6 @@ public class DocumentService {
         document.setId(UUID.randomUUID());
         document.setName(documentRequestDto.getName());
         document.setUrl(documentRequestDto.getUrl());
-        document.setProfile(profile);
         document.setDocumentType(documentRequestDto.getDocumentType());
 
         Document savedDocument = documentRepository.save(document);
