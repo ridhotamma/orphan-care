@@ -8,13 +8,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = PasswordValidator.class)
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER })
+@Constraint(validatedBy = SchoolGradeValidator.class)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidPassword {
-    String message() default "Invalid password";
-
+public @interface ValidSchoolGrade {
+    String message() default "Invalid school grade for the given school type";
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

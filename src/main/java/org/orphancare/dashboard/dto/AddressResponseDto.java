@@ -9,8 +9,13 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDto {
+public class AddressResponseDto {
+
     private UUID id;
-    private String email;
-    private String username;
+    private String street;
+    private String urbanVillage;
+    private String subdistrict;
+    private String city;
+    private String province;
+    private String postalCode;
 }
