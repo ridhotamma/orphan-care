@@ -9,6 +9,7 @@ import org.orphancare.dashboard.entity.SchoolGrade;
 import org.orphancare.dashboard.entity.SchoolType;
 import org.orphancare.dashboard.validation.ValidSchoolGrade;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +18,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @ValidSchoolGrade
 public class ProfileRequestDto {
+
+    @Size(max = 255)
+    private String fullName;
+
+    private Date birthday;
 
     @Size(max = 255)
     private String profilePicture;

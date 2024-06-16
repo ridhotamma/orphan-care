@@ -109,6 +109,8 @@ public class UserService {
             profileDto = new ProfileResponseDto(
                     profile.getId(),
                     profile.getProfilePicture(),
+                    profile.getFullName(),
+                    profile.getBirthday(),
                     profile.getBio(),
                     profile.getAddress(),
                     profile.getDocuments(),

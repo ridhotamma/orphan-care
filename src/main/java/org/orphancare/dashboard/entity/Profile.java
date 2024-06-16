@@ -1,13 +1,13 @@
 package org.orphancare.dashboard.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.orphancare.dashboard.validation.ValidSchoolGrade;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,9 +26,13 @@ public class Profile {
     private UUID id;
 
     @Size(max = 255)
+    private String fullName;
+
+    private Date birthday;
+
+    @Size(max = 255)
     private String profilePicture;
 
-    @NotBlank
     @Size(max = 1000)
     private String bio;
 
@@ -45,4 +49,3 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     private SchoolType schoolType;
 }
-

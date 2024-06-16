@@ -21,27 +21,21 @@ public class Address {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @NotBlank
     @Size(max = 255)
     private String street;
 
-    @NotBlank
     @Size(max = 255)
     private String urbanVillage;
 
-    @NotBlank
     @Size(max = 255)
     private String subdistrict;
 
-    @NotBlank
     @Size(max = 255)
     private String city;
 
-    @NotBlank
     @Size(max = 255)
     private String province;
 
-    @NotBlank
     @Size(max = 5)
     private String postalCode;
 }

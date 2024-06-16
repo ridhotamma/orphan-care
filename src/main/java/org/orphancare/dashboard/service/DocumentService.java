@@ -5,11 +5,11 @@ import org.orphancare.dashboard.dto.DocumentRequestDto;
 import org.orphancare.dashboard.dto.DocumentResponseDto;
 import org.orphancare.dashboard.entity.Document;
 import org.orphancare.dashboard.entity.Profile;
+import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.repository.DocumentRepository;
 import org.orphancare.dashboard.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,56 +19,49 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final ProfileRepository profileRepository;
 
-    public DocumentResponseDto createDocument(DocumentRequestDto documentRequestDto) {
+    public DocumentResponseDto addDocument(DocumentRequestDto documentRequestDto) {
+        Profile profile = profileRepository.findById(documentRequestDto.getProfileId())
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for this id: " + documentRequestDto.getProfileId()));
+
         Document document = new Document();
+        document.setId(UUID.randomUUID());
         document.setName(documentRequestDto.getName());
         document.setUrl(documentRequestDto.getUrl());
+        document.setProfile(profile);
         document.setDocumentType(documentRequestDto.getDocumentType());
 
-        Optional<Profile> profileOptional = profileRepository.findById(documentRequestDto.getProfileId());
-        if (profileOptional.isPresent()) {
-            document.setProfile(profileOptional.get());
-        } else {
-            throw new IllegalArgumentException("Profile not found");
-        }
-
         Document savedDocument = documentRepository.save(document);
+
         return toResponseDto(savedDocument);
     }
 
     public DocumentResponseDto getDocument(UUID id) {
-        Optional<Document> document = documentRepository.findById(id);
-        return document.map(this::toResponseDto).orElse(null);
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found for this id: " + id));
+        return toResponseDto(document);
     }
 
     public DocumentResponseDto updateDocument(UUID id, DocumentRequestDto documentRequestDto) {
-        Optional<Document> documentOptional = documentRepository.findById(id);
-        if (documentOptional.isPresent()) {
-            Document document = documentOptional.get();
-            document.setName(documentRequestDto.getName());
-            document.setUrl(documentRequestDto.getUrl());
-            document.setDocumentType(documentRequestDto.getDocumentType());
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found for this id: " + id));
 
-            Optional<Profile> profileOptional = profileRepository.findById(documentRequestDto.getProfileId());
-            if (profileOptional.isPresent()) {
-                document.setProfile(profileOptional.get());
-            } else {
-                throw new IllegalArgumentException("Profile not found");
-            }
+        Profile profile = profileRepository.findById(documentRequestDto.getProfileId())
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for this id: " + documentRequestDto.getProfileId()));
 
-            Document updatedDocument = documentRepository.save(document);
-            return toResponseDto(updatedDocument);
-        }
-        return null;
+        document.setName(documentRequestDto.getName());
+        document.setUrl(documentRequestDto.getUrl());
+        document.setProfile(profile);
+        document.setDocumentType(documentRequestDto.getDocumentType());
+
+        Document updatedDocument = documentRepository.save(document);
+
+        return toResponseDto(updatedDocument);
     }
 
     public void deleteDocument(UUID id) {
-        documentRepository.deleteById(id);
-    }
-
-    public Document findById(UUID id) {
-        Optional<Document> documentOptional = documentRepository.findById(id);
-        return documentOptional.orElse(null);
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Document not found for this id: " + id));
+        documentRepository.delete(document);
     }
 
     private DocumentResponseDto toResponseDto(Document document) {

@@ -8,6 +8,7 @@ import org.orphancare.dashboard.entity.Document;
 import org.orphancare.dashboard.entity.SchoolGrade;
 import org.orphancare.dashboard.entity.SchoolType;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +19,8 @@ public class ProfileResponseDto {
 
     private UUID id;
     private String profilePicture;
+    private String fullName;
+    private Date birthday;
     private String bio;
     private Address address;
     private Set<Document> documents;

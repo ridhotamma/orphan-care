@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassword {
-    String message() default "Invalid password";
+    String message() default "Password at least have Uppercase Letter and Number";
 
     Class<?>[] groups() default {};
 
