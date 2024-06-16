@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.orphancare.dashboard.validation.NoWhiteSpace;
+import org.orphancare.dashboard.validation.ValidPassword;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,11 +34,13 @@ public class User {
     @NotBlank
     @Size(min = 8, max = 255)
     @Column(nullable = false)
+    @ValidPassword
     private String password;
 
     @NotBlank
     @Size(max = 255)
     @Column(nullable = false, unique = true)
+    @NoWhiteSpace
     private String username;
 
     @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
@@ -48,7 +52,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Profile profile;
 
-    @Column(nullable = true, columnDefinition = "boolean default true")
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
