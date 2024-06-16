@@ -1,6 +1,7 @@
 package org.orphancare.dashboard.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +23,9 @@ public class DocumentRequestDto {
     @Size(max = 255)
     private String url;
 
-    @NotBlank
+    @NotNull
     private UUID profileId;
 
-    @NotBlank
+    @NotNull
     private DocumentType documentType;
 }

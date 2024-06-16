@@ -3,14 +3,20 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DocumentRequestDto;
 import org.orphancare.dashboard.dto.DocumentResponseDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Document;
 import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.repository.DocumentRepository;
 import org.orphancare.dashboard.repository.ProfileRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +24,23 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final ProfileRepository profileRepository;
+
+    public PaginatedResponse<DocumentResponseDto> getAllDocuments(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Document> documentPage = documentRepository.findAll(pageable);
+
+        List<DocumentResponseDto> documents = documentPage.stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
+
+        return new PaginatedResponse<>(
+                documents,
+                page,
+                size,
+                documentPage.getTotalElements(),
+                documentPage.getTotalPages()
+        );
+    }
 
     public DocumentResponseDto addDocument(DocumentRequestDto documentRequestDto) {
         Profile profile = profileRepository.findById(documentRequestDto.getProfileId())

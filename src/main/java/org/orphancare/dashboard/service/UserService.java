@@ -1,10 +1,7 @@
 package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
-import org.orphancare.dashboard.dto.PaginatedResponse;
-import org.orphancare.dashboard.dto.UserRequestDto;
-import org.orphancare.dashboard.dto.UserResponseDto;
-import org.orphancare.dashboard.dto.ProfileResponseDto;
+import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.entity.Profile;
@@ -64,11 +61,14 @@ public class UserService {
                 .map(RoleType::valueOf)
                 .collect(Collectors.toSet()));
 
+        Profile profile = new Profile();
+        user.setProfile(profile);
+
         User savedUser = userRepository.save(user);
         return toResponseDto(savedUser);
     }
 
-    public UserResponseDto updateUser(UUID id, UserRequestDto userDto) {
+    public UserResponseDto updateUser(UUID id, UserUpdateDto userDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
 
@@ -81,9 +81,6 @@ public class UserService {
 
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());
-        if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        }
         user.setRoles(userDto.getRoles().stream()
                 .map(RoleType::valueOf)
                 .collect(Collectors.toSet()));

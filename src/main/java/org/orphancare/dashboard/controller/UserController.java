@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.dto.UserRequestDto;
 import org.orphancare.dashboard.dto.UserResponseDto;
+import org.orphancare.dashboard.dto.UserUpdateDto;
 import org.orphancare.dashboard.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResponseDto updateUser(@PathVariable UUID id, @RequestBody @Valid UserRequestDto userDetails) {
+    public UserResponseDto updateUser(@PathVariable UUID id, @RequestBody @Valid UserUpdateDto userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
