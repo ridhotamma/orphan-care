@@ -15,4 +15,7 @@ public class UserResponseDto {
     private String email;
     private String username;
     private Set<String> roles;
+    private boolean active;
+    private ProfileRequestDto profile;
+    private AddressRequestDto address;
 }

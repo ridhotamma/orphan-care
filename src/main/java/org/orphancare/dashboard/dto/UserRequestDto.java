@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.validation.ValidPassword;
 
 import java.util.Set;
@@ -30,6 +29,4 @@ public class UserRequestDto {
 
     @NotEmpty
     private Set<String> roles;
-
-    private Profile profile;
 }

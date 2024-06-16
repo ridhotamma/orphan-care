@@ -48,8 +48,8 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Profile profile;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isActive = true;
+    @Column(nullable = true, columnDefinition = "boolean default true")
+    private boolean active = true;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Document> documents = new HashSet<>();
