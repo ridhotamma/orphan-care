@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -13,4 +14,5 @@ public class UserResponseDto {
     private UUID id;
     private String email;
     private String username;
+    private Set<String> roles;
 }

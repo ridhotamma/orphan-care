@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.dto.UserRequestDto;
 import org.orphancare.dashboard.dto.UserResponseDto;
+import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,9 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setUsername(userDto.getUsername());
+        user.setRoles(userDto.getRoles().stream()
+                .map(RoleType::valueOf)
+                .collect(Collectors.toSet()));
 
         User savedUser = userRepository.save(user);
         return toResponseDto(savedUser);
@@ -65,11 +70,21 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id: " + id));
 
+        if (!user.getEmail().equals(userDto.getEmail()) && userRepository.existsByEmail(userDto.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists: " + userDto.getEmail());
+        }
+        if (!user.getUsername().equals(userDto.getUsername()) && userRepository.existsByUsername(userDto.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exists: " + userDto.getUsername());
+        }
+
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());
         if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
+        user.setRoles(userDto.getRoles().stream()
+                .map(RoleType::valueOf)
+                .collect(Collectors.toSet()));
 
         User updatedUser = userRepository.save(user);
         return toResponseDto(updatedUser);
@@ -82,7 +97,16 @@ public class UserService {
     }
 
     private UserResponseDto toResponseDto(User user) {
-        return new UserResponseDto(user.getId(), user.getEmail(), user.getUsername());
+        Set<String> roles = user.getRoles().stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                roles
+        );
     }
 
     private void checkIfUserExists(UserRequestDto userDto) {

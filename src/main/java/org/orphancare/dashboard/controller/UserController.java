@@ -28,14 +28,12 @@ public class UserController {
     }
 
     @PostMapping
-    @Valid
-    public UserResponseDto createUser(@Valid @RequestBody UserRequestDto userDto) {
+    public UserResponseDto createUser(@RequestBody @Valid UserRequestDto userDto) {
         return userService.createUser(userDto);
     }
 
     @PutMapping("/{id}")
-    @Valid
-    public UserResponseDto updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequestDto userDetails) {
+    public UserResponseDto updateUser(@PathVariable UUID id, @RequestBody @Valid UserRequestDto userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
