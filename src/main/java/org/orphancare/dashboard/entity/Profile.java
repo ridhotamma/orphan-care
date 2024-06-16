@@ -5,11 +5,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.orphancare.dashboard.validation.ValidSchoolGrade;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +14,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ValidSchoolGrade
 public class Profile {
 
     @Id
@@ -39,13 +35,4 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
-
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Document> documents = new HashSet<>();
-
-    @Enumerated(EnumType.STRING)
-    private SchoolGrade schoolGrade;
-
-    @Enumerated(EnumType.STRING)
-    private SchoolType schoolType;
 }

@@ -2,7 +2,6 @@ package org.orphancare.dashboard.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,9 +32,5 @@ public class Document {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private Profile profile;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private DocumentType documentType;
 }
 
