@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.dto.UserRequestDto;
 import org.orphancare.dashboard.dto.UserResponseDto;
+import org.orphancare.dashboard.dto.ProfileResponseDto;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
 import org.orphancare.dashboard.repository.UserRepository;
@@ -101,11 +103,26 @@ public class UserService {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
 
+        Profile profile = user.getProfile();
+        ProfileResponseDto profileDto = null;
+        if (profile != null) {
+            profileDto = new ProfileResponseDto(
+                    profile.getId(),
+                    profile.getProfilePicture(),
+                    profile.getBio(),
+                    profile.getAddress(),
+                    profile.getDocuments(),
+                    profile.getSchoolGrade(),
+                    profile.getSchoolType()
+            );
+        }
+
         return new UserResponseDto(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
-                roles
+                roles,
+                profileDto
         );
     }
 
