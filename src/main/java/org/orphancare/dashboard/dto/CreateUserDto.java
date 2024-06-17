@@ -2,31 +2,28 @@ package org.orphancare.dashboard.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
 
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserRequestDto {
-    @NotBlank
+public class CreateUserDto {
     @Email
+    @NotBlank
     private String email;
 
-    @NotBlank
+    @Size(min = 8, max = 255)
     @ValidPassword
     private String password;
 
+    @Size(max = 255)
     @NotBlank
-    @Size(min = 4, message = "Username must be at least 4 characters long")
+    @NoWhiteSpace
     private String username;
 
-    @NotEmpty
     private Set<String> roles;
+    private boolean active;
 }

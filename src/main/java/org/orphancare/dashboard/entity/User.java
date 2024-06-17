@@ -2,7 +2,6 @@ package org.orphancare.dashboard.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,17 +26,14 @@ public class User {
     private UUID id;
 
     @Email
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
     @Size(min = 8, max = 255)
     @Column(nullable = false)
     @ValidPassword
     private String password;
 
-    @NotBlank
     @Size(max = 255)
     @Column(nullable = false, unique = true)
     @NoWhiteSpace
@@ -49,12 +45,12 @@ public class User {
     @Column(name = "role")
     private Set<RoleType> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Document> documents = new HashSet<>();
 }
