@@ -71,7 +71,7 @@ public class DocumentService {
 
     public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
         List<Document> documents = documentRepository.findByOwnerId(userId);
-        return documents.stream().map(this::convertToDtoResponse).collect(Collectors.toList());
+        return documents.stream().map(this::convertToDtoResponseDto).collect(Collectors.toList());
     }
 
     private DocumentDto convertToDto(Document document) {
@@ -83,7 +83,7 @@ public class DocumentService {
         return documentDto;
     }
 
-    private DocumentDto.Response convertToDtoResponse(Document document) {
+    private DocumentDto.Response convertToDtoResponseDto(Document document) {
         DocumentDto.Response documentDto = new DocumentDto.Response();
         documentDto.setId(document.getId());
         documentDto.setName(document.getName());
