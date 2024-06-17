@@ -1,13 +1,13 @@
 package org.orphancare.dashboard.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.orphancare.dashboard.entity.DocumentType;
+import org.orphancare.dashboard.dto.DocumentTypeDto;
 import org.orphancare.dashboard.service.DocumentTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -17,36 +17,35 @@ public class DocumentTypeController {
 
     private final DocumentTypeService documentTypeService;
 
-    @GetMapping
-    public List<DocumentType> getAllDocumentTypes() {
-        return documentTypeService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<DocumentType> getDocumentTypeById(@PathVariable UUID id) {
-        Optional<DocumentType> documentType = documentTypeService.findById(id);
-        return documentType.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public DocumentType createDocumentType(@RequestBody DocumentType documentType) {
-        return documentTypeService.save(documentType);
+    public ResponseEntity<DocumentTypeDto> createDocumentType(@Valid @RequestBody DocumentTypeDto documentTypeDto) {
+        DocumentTypeDto createdDocumentType = documentTypeService.createDocumentType(documentTypeDto);
+        return ResponseEntity.ok(createdDocumentType);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DocumentType> updateDocumentType(@PathVariable UUID id, @RequestBody DocumentType documentType) {
-        Optional<DocumentType> existingDocumentType = documentTypeService.findById(id);
-        if (existingDocumentType.isPresent()) {
-            documentType.setId(id);
-            return ResponseEntity.ok(documentTypeService.save(documentType));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{documentTypeId}")
+    public ResponseEntity<DocumentTypeDto> updateDocumentType(
+            @PathVariable UUID documentTypeId,
+            @Valid @RequestBody DocumentTypeDto documentTypeDto) {
+        DocumentTypeDto updatedDocumentType = documentTypeService.updateDocumentType(documentTypeId, documentTypeDto);
+        return ResponseEntity.ok(updatedDocumentType);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocumentType(@PathVariable UUID id) {
-        documentTypeService.deleteById(id);
+    @DeleteMapping("/{documentTypeId}")
+    public ResponseEntity<Void> deleteDocumentType(@PathVariable UUID documentTypeId) {
+        documentTypeService.deleteDocumentType(documentTypeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{documentTypeId}")
+    public ResponseEntity<DocumentTypeDto> getDocumentTypeById(@PathVariable UUID documentTypeId) {
+        DocumentTypeDto documentType = documentTypeService.getDocumentTypeById(documentTypeId);
+        return ResponseEntity.ok(documentType);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DocumentTypeDto>> getAllDocumentTypes() {
+        List<DocumentTypeDto> documentTypes = documentTypeService.getAllDocumentTypes();
+        return ResponseEntity.ok(documentTypes);
     }
 }

@@ -47,6 +47,13 @@ public class ProfileService {
         return convertToDto(savedProfile);
     }
 
+    public ProfileDto getProfileByUserId(UUID userId) {
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id " + userId));
+
+        return convertToDto(profile);
+    }
+
     private void updateAddressEntity(AddressDto addressDto, Address address) {
         address.setStreet(addressDto.getStreet());
         address.setUrbanVillage(addressDto.getUrbanVillage());

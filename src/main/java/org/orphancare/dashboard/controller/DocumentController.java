@@ -2,52 +2,54 @@ package org.orphancare.dashboard.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.orphancare.dashboard.entity.Document;
+import org.orphancare.dashboard.dto.DocumentDto;
 import org.orphancare.dashboard.service.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/documents")
+@RequestMapping("/api/users/{userId}/documents")
 @RequiredArgsConstructor
 public class DocumentController {
 
     private final DocumentService documentService;
 
-    @GetMapping
-    public List<Document> getAllDocuments() {
-        return documentService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable UUID id) {
-        Optional<Document> document = documentService.findById(id);
-        return document.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public Document createDocument(@RequestBody @Valid Document document) {
-        return documentService.save(document);
+    public ResponseEntity<DocumentDto> createDocument(
+            @PathVariable UUID userId,
+            @Valid @RequestBody DocumentDto documentDto) {
+        DocumentDto createdDocument = documentService.createDocument(userId, documentDto);
+        return ResponseEntity.ok(createdDocument);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Document> updateDocument(@PathVariable UUID id, @RequestBody @Valid Document document) {
-        Optional<Document> existingDocument = documentService.findById(id);
-        if (existingDocument.isPresent()) {
-            document.setId(id);
-            return ResponseEntity.ok(documentService.save(document));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{documentId}")
+    public ResponseEntity<DocumentDto> updateDocument(
+            @PathVariable UUID userId,
+            @PathVariable UUID documentId,
+            @Valid @RequestBody DocumentDto documentDto) {
+        documentDto.setDocumentTypeId(documentId);
+        DocumentDto updatedDocument = documentService.updateDocument(documentId, documentDto);
+        return ResponseEntity.ok(updatedDocument);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
-        documentService.deleteById(id);
+    @DeleteMapping("/{documentId}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable UUID userId, @PathVariable UUID documentId) {
+        documentService.deleteDocument(documentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{documentId}")
+    public ResponseEntity<DocumentDto> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
+        DocumentDto document = documentService.getDocumentById(documentId);
+        return ResponseEntity.ok(document);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DocumentDto>> getAllDocumentsByUserId(@PathVariable UUID userId) {
+        List<DocumentDto> documents = documentService.getAllDocumentsByUserId(userId);
+        return ResponseEntity.ok(documents);
     }
 }
