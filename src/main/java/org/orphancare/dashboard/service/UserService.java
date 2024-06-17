@@ -10,10 +10,13 @@ import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -66,9 +69,10 @@ public class UserService {
         return convertToDto(updatedUser);
     }
 
-    public UserDto changeUserPassword(UUID userId, ChangePasswordUserDto changePasswordUserDto) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+    public UserDto changeUserPassword(ChangePasswordUserDto changePasswordUserDto) throws AccessDeniedException {
+        String currentUsername = getCurrentUsername();
+        User existingUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
 
         existingUser.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
         User updatedUser = userRepository.save(existingUser);
@@ -94,18 +98,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
-        return convertToDto(user);
-    }
-
-    public UserDto getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + username));
-        return convertToDto(user);
-    }
-
     private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
@@ -114,5 +106,14 @@ public class UserService {
         userDto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
         userDto.setActive(user.isActive());
         return userDto;
+    }
+
+    private String getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
     }
 }

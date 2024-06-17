@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 "Resource not found",
-                "details: " + ex,
+                "details: " + ex.getMessage(),
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Bad Request",
-                "details: " + ex,
+                "details: " + ex.getMessage(),
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
-                "Route not found " + ex,
+                "Route not found: " + ex.getMessage(),
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
                 "Method Not Allowed",
-                "Method not allowed " + ex,
+                "Method not allowed: " + ex.getMessage(),
                 request.getDescription(false)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);

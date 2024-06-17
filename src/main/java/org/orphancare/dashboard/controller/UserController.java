@@ -10,11 +10,12 @@ import org.orphancare.dashboard.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/public/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -32,9 +33,9 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PutMapping("/{id}/change-password")
-    public ResponseEntity<UserDto> changeUserPassword(@PathVariable UUID id, @Valid @RequestBody ChangePasswordUserDto changePasswordUserDto) {
-        UserDto updatedUser = userService.changeUserPassword(id, changePasswordUserDto);
+    @PutMapping("/change-password")
+    public ResponseEntity<UserDto> changeUserPassword(@Valid @RequestBody ChangePasswordUserDto changePasswordUserDto) throws AccessDeniedException {
+        UserDto updatedUser = userService.changeUserPassword(changePasswordUserDto);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -54,17 +55,5 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
-        UserDto user = userService.getUserByEmail(email);
-        return ResponseEntity.ok(user);
-    }
-
-    @GetMapping("/username/{username}")
-    public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
-        UserDto user = userService.getUserByUsername(username);
-        return ResponseEntity.ok(user);
     }
 }
