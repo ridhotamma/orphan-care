@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto.UserWithProfileDto>> getAllUsersWithShortProfile() {
+        List<UserDto.UserWithProfileDto> users = userService.getAllUsersWithShortProfile();
         return ResponseEntity.ok(users);
     }
 }

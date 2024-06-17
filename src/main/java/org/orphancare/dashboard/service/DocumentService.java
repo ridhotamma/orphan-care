@@ -63,15 +63,15 @@ public class DocumentService {
         documentRepository.deleteById(documentId);
     }
 
-    public DocumentDto getDocumentById(UUID documentId) {
+    public DocumentDto.Response getDocumentById(UUID documentId) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + documentId));
-        return convertToDto(document);
+        return convertToDtoResponse(document);
     }
 
-    public List<DocumentDto> getAllDocumentsByUserId(UUID userId) {
+    public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
         List<Document> documents = documentRepository.findByOwnerId(userId);
-        return documents.stream().map(this::convertToDto).collect(Collectors.toList());
+        return documents.stream().map(this::convertToDtoResponse).collect(Collectors.toList());
     }
 
     private DocumentDto convertToDto(Document document) {
@@ -80,6 +80,15 @@ public class DocumentService {
         documentDto.setName(document.getName());
         documentDto.setUrl(document.getUrl());
         documentDto.setDocumentTypeId(document.getDocumentType().getId());
+        return documentDto;
+    }
+
+    private DocumentDto.Response convertToDtoResponse(Document document) {
+        DocumentDto.Response documentDto = new DocumentDto.Response();
+        documentDto.setId(document.getId());
+        documentDto.setName(document.getName());
+        documentDto.setUrl(document.getUrl());
+        documentDto.setDocumentType(document.getDocumentType());
         return documentDto;
     }
 }

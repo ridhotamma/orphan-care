@@ -24,4 +24,10 @@ public class ProfileDto {
     private String gender;
 
     private AddressDto address;
+
+    @Data
+    public static class ShortResponse {
+        private String fullName;
+        private String profilePicture;
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/admin/users/{userId}/documents")
+@RequestMapping("/api/public/users/{userId}/documents")
 @RequiredArgsConstructor
 public class DocumentController {
 
@@ -42,14 +42,14 @@ public class DocumentController {
     }
 
     @GetMapping("/{documentId}")
-    public ResponseEntity<DocumentDto> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
-        DocumentDto document = documentService.getDocumentById(documentId);
+    public ResponseEntity<DocumentDto.Response> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
+        DocumentDto.Response document = documentService.getDocumentById(documentId);
         return ResponseEntity.ok(document);
     }
 
     @GetMapping
-    public ResponseEntity<List<DocumentDto>> getAllDocumentsByUserId(@PathVariable UUID userId) {
-        List<DocumentDto> documents = documentService.getAllDocumentsByUserId(userId);
+    public ResponseEntity<List<DocumentDto.Response>> getAllDocumentsByUserId(@PathVariable UUID userId) {
+        List<DocumentDto.Response> documents = documentService.getAllDocumentsByUserId(userId);
         return ResponseEntity.ok(documents);
     }
 }

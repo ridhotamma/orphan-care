@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/admin/document-types")
+@RequestMapping("/api/public/document-types")
 @RequiredArgsConstructor
 public class DocumentTypeController {
 

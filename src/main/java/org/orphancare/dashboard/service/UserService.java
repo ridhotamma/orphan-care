@@ -1,14 +1,13 @@
 package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
-import org.orphancare.dashboard.dto.CreateUserDto;
-import org.orphancare.dashboard.dto.UpdateUserDto;
-import org.orphancare.dashboard.dto.ChangePasswordUserDto;
-import org.orphancare.dashboard.dto.UserDto;
+import org.orphancare.dashboard.dto.*;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
+import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserDto createUser(CreateUserDto createUserDto) {
@@ -92,9 +92,9 @@ public class UserService {
         return convertToDto(user);
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<UserDto.UserWithProfileDto> getAllUsersWithShortProfile() {
         return userRepository.findAll().stream()
-                .map(this::convertToDto)
+                .map(this::convertToWithProfileDto)
                 .collect(Collectors.toList());
     }
 
@@ -105,6 +105,23 @@ public class UserService {
         userDto.setUsername(user.getUsername());
         userDto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
         userDto.setActive(user.isActive());
+        return userDto;
+    }
+
+    private UserDto.UserWithProfileDto convertToWithProfileDto(User user) {
+        Profile profile = profileRepository.findByUserId(user.getId()).orElseGet(Profile::new);
+
+        ProfileDto.ShortResponse profileDto = new ProfileDto.ShortResponse();
+        profileDto.setFullName(profile.getFullName());
+        profileDto.setProfilePicture(profile.getProfilePicture());
+
+        UserDto.UserWithProfileDto userDto = new UserDto.UserWithProfileDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setUsername(user.getUsername());
+        userDto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
+        userDto.setActive(user.isActive());
+        userDto.setProfile(profileDto);
         return userDto;
     }
 

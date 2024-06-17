@@ -1,5 +1,7 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.UUID;
@@ -8,5 +10,8 @@ import java.util.UUID;
 public class DocumentTypeDto {
 
     private UUID id;
+
+    @NotBlank
+    @NotNull
     private String name;
 }
