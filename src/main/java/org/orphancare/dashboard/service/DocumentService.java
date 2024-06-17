@@ -66,7 +66,7 @@ public class DocumentService {
     public DocumentDto.Response getDocumentById(UUID documentId) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id " + documentId));
-        return convertToDtoResponse(document);
+        return convertToDtoResponseDto(document);
     }
 
     public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
