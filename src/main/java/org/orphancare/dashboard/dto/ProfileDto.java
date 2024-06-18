@@ -1,7 +1,9 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.orphancare.dashboard.validation.ValidGender;
 
@@ -19,6 +21,9 @@ public class ProfileDto {
     private LocalDate leaveDate;
     private String bio;
 
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
+    private String phoneNumber;
+
     @NotNull
     @ValidGender
     private String gender;
@@ -29,5 +34,6 @@ public class ProfileDto {
     public static class ShortResponse {
         private String fullName;
         private String profilePicture;
+        private String phoneNumber;
     }
 }

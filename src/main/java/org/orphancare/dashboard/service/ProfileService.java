@@ -34,6 +34,7 @@ public class ProfileService {
         profile.setJoinDate(profileDto.getJoinDate());
         profile.setLeaveDate(profileDto.getLeaveDate());
         profile.setBio(profileDto.getBio());
+        profile.setPhoneNumber(profileDto.getPhoneNumber());
         profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
         profile.setUser(user);
 
@@ -48,8 +49,7 @@ public class ProfileService {
     }
 
     public ProfileDto getProfileByUserId(UUID userId) {
-        Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id " + userId));
+        Profile profile = profileRepository.findByUserId(userId).orElse(new Profile());
 
         return convertToDto(profile);
     }
@@ -71,7 +71,11 @@ public class ProfileService {
         profileDto.setJoinDate(profile.getJoinDate());
         profileDto.setLeaveDate(profile.getLeaveDate());
         profileDto.setBio(profile.getBio());
-        profileDto.setGender(profile.getGender().name());
+        profileDto.setPhoneNumber(profile.getPhoneNumber());
+
+        if (profile.getGender() != null) {
+            profileDto.setGender(profile.getGender().name());
+        }
 
         if (profile.getAddress() != null) {
             AddressDto addressDto = new AddressDto();

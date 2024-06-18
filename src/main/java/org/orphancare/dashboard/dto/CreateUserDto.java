@@ -1,11 +1,10 @@
 package org.orphancare.dashboard.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
+import org.orphancare.dashboard.validation.ValidRoles;
 
 import java.util.Set;
 
@@ -24,6 +23,10 @@ public class CreateUserDto {
     @NoWhiteSpace
     private String username;
 
+    @NotEmpty
+    @NotNull
+    @ValidRoles
     private Set<String> roles;
+
     private boolean active;
 }
