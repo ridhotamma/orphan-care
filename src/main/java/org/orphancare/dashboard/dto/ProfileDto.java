@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -20,6 +21,8 @@ public class ProfileDto {
     private LocalDate joinDate;
     private LocalDate leaveDate;
     private String bio;
+
+    @Valid
     private AddressDto address;
     private UUID bedRoomId;
     private BedRoomDto bedRoom;

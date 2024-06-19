@@ -1,5 +1,11 @@
 -- V1__Initial_migration.sql
 
+-- Enum: RoleType
+CREATE TYPE RoleType AS ENUM (
+    'ROLE_ADMIN',
+    'ROLE_USER'
+);
+
 -- Table: addresses
 CREATE TABLE addresses (
     id UUID PRIMARY KEY,
@@ -8,7 +14,7 @@ CREATE TABLE addresses (
     subdistrict VARCHAR(255),
     city VARCHAR(255),
     province VARCHAR(255),
-    postal_code VARCHAR(5)
+    postal_code VARCHAR(10)
 );
 
 -- Table: document_types
@@ -66,6 +72,7 @@ CREATE TABLE documents (
 -- Table: user_roles
 CREATE TABLE user_roles (
     user_id UUID NOT NULL,
-    role VARCHAR(255) NOT NULL,
-    CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    role RoleType NOT NULL,
+    CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role)
 );

@@ -25,8 +25,8 @@ public class BedRoom {
     @Column
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "bedroom_type_id", nullable = false)
     private BedRoomType bedRoomType;
 
     @OneToMany(mappedBy = "bedRoom", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -8,6 +8,7 @@ import org.orphancare.dashboard.entity.BedRoomType;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.BedRoomMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
+import org.orphancare.dashboard.repository.BedRoomTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class BedRoomService {
 
     private final BedRoomRepository bedRoomRepository;
+    private final BedRoomTypeRepository bedRoomTypeRepository;
     private final BedRoomMapper bedRoomMapper;
 
     public List<BedRoomDto> getAllBedrooms() {
@@ -37,8 +39,10 @@ public class BedRoomService {
     }
 
     public BedRoomDto createBedRoom(BedRoomDto bedRoomDto) {
+        BedRoomType bedRoomType = bedRoomTypeRepository.findById(bedRoomDto.getBedRoomTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bed room type not found"));
         BedRoom bedRoom = bedRoomMapper.toEntity(bedRoomDto);
-        bedRoom.setBedRoomType(BedRoomType.valueOf(bedRoomDto.getBedRoomType().toUpperCase()));
+        bedRoom.setBedRoomType(bedRoomType);
         bedRoom = bedRoomRepository.save(bedRoom);
         return bedRoomMapper.toDto(bedRoom);
     }
@@ -46,13 +50,20 @@ public class BedRoomService {
     public BedRoomDto updateBedRoom(UUID id, BedRoomDto bedRoomDto) {
         BedRoom existingBedRoom = bedRoomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bed room not found"));
+
+        BedRoomType bedRoomType = bedRoomTypeRepository.findById(bedRoomDto.getBedRoomTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bed room type not found"));
+
         existingBedRoom.setName(bedRoomDto.getName());
-        existingBedRoom.setBedRoomType(BedRoomType.valueOf(bedRoomDto.getBedRoomType().toUpperCase()));
+        existingBedRoom.setBedRoomType(bedRoomType);
         existingBedRoom = bedRoomRepository.save(existingBedRoom);
         return bedRoomMapper.toDto(existingBedRoom);
     }
 
     public void deleteBedRoom(UUID id) {
+        if (!bedRoomRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Bed room not found with id: " + id);
+        }
         bedRoomRepository.deleteById(id);
     }
 }

@@ -2,19 +2,19 @@ package org.orphancare.dashboard.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.orphancare.dashboard.dto.ProfileDto;
 import org.orphancare.dashboard.entity.Profile;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { AddressMapper.class, BedRoomMapper.class })
 public interface ProfileMapper {
-    ProfileMapper INSTANCE = Mappers.getMapper(ProfileMapper.class);
 
-    @Mapping(source = "bedRoom.id", target = "bedRoomId")
-    @Mapping(source = "bedRoom", target = "bedRoom")
+    @Mapping(source = "profile.bedRoom.id", target = "bedRoomId")
+    @Mapping(source = "profile.bedRoom", target = "bedRoom")
+    @Mapping(source = "profile.address", target = "address")
     ProfileDto toDto(Profile profile);
 
-    @Mapping(source = "bedRoomId", target = "bedRoom.id")
-    @Mapping(source = "bedRoom", target = "bedRoom")
+    @Mapping(source = "profileDto.bedRoomId", target = "bedRoom.id")
+    @Mapping(source = "profileDto.bedRoom", target = "bedRoom")
+    @Mapping(source = "profileDto.address", target = "address")
     Profile toEntity(ProfileDto profileDto);
 }
