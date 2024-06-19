@@ -14,4 +14,8 @@ public class DocumentTypeDto {
     @NotBlank
     @NotNull
     private String name;
+
+    @NotBlank
+    @NotNull
+    private String type;
 }

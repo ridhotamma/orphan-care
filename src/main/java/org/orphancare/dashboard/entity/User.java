@@ -39,7 +39,7 @@ public class User {
     @NoWhiteSpace
     private String username;
 
-    @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = RoleType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
@@ -51,6 +51,6 @@ public class User {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Document> documents = new HashSet<>();
 }

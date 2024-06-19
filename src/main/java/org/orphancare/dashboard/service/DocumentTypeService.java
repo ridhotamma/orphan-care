@@ -22,6 +22,7 @@ public class DocumentTypeService {
     public DocumentTypeDto createDocumentType(DocumentTypeDto documentTypeDto) {
         DocumentType documentType = new DocumentType();
         documentType.setName(documentTypeDto.getName());
+        documentType.setType(documentTypeDto.getType());
 
         DocumentType savedDocumentType = documentTypeRepository.save(documentType);
         return convertToDto(savedDocumentType);
@@ -32,6 +33,7 @@ public class DocumentTypeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Document type not found with id " + documentTypeId));
 
         documentType.setName(documentTypeDto.getName());
+        documentType.setType(documentTypeDto.getType());
 
         DocumentType updatedDocumentType = documentTypeRepository.save(documentType);
         return convertToDto(updatedDocumentType);
@@ -59,6 +61,7 @@ public class DocumentTypeService {
         DocumentTypeDto documentTypeDto = new DocumentTypeDto();
         documentTypeDto.setId(documentType.getId());
         documentTypeDto.setName(documentType.getName());
+        documentTypeDto.setType(documentType.getType());
         return documentTypeDto;
     }
 }
