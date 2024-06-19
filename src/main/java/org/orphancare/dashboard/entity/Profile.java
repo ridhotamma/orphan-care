@@ -54,4 +54,8 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
+    @ManyToOne
+    @JoinColumn(name = "bedroom_id")
+    private BedRoom bedRoom;
 }

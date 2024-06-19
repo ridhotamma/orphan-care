@@ -2,12 +2,11 @@ package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.AddressDto;
+import org.orphancare.dashboard.dto.BedRoomDto;
 import org.orphancare.dashboard.dto.ProfileDto;
-import org.orphancare.dashboard.entity.Address;
-import org.orphancare.dashboard.entity.Gender;
-import org.orphancare.dashboard.entity.Profile;
-import org.orphancare.dashboard.entity.User;
+import org.orphancare.dashboard.entity.*;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
+import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,15 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
+    private final BedRoomRepository bedRoomRepository;
 
     public ProfileDto createOrUpdateProfile(UUID userId, ProfileDto profileDto) {
+        System.out.println("Bed room Id " + profileDto.getBedRoom());
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        BedRoom bedRoom = bedRoomRepository.findById(profileDto.getBedRoomId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getBedRoomId()));
 
         Profile profile = profileRepository.findByUser(user).orElse(new Profile());
         profile.setFullName(profileDto.getFullName());
@@ -36,6 +40,7 @@ public class ProfileService {
         profile.setBio(profileDto.getBio());
         profile.setPhoneNumber(profileDto.getPhoneNumber());
         profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
+        profile.setBedRoom(bedRoom);
         profile.setUser(user);
 
         if (profileDto.getAddress() != null) {
@@ -86,6 +91,16 @@ public class ProfileService {
             addressDto.setProvince(profile.getAddress().getProvince());
             addressDto.setPostalCode(profile.getAddress().getPostalCode());
             profileDto.setAddress(addressDto);
+        }
+
+        if (profile.getBedRoom() != null) {
+            BedRoomDto bedRoomDto = new BedRoomDto();
+            bedRoomDto.setBedRoomType(String.valueOf(profile.getBedRoom().getBedRoomType()));
+            bedRoomDto.setName(profile.getBedRoom().getName());
+            bedRoomDto.setId(profile.getBedRoom().getId());
+
+            profileDto.setBedRoomId(profile.getBedRoom().getId());
+            profileDto.setBedRoom(bedRoomDto);
         }
 
         return profileDto;
