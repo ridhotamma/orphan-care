@@ -31,9 +31,12 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
 
-        BedRoom bedRoom = bedRoomRepository.findById(profileDto.getBedRoomId())
-                .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getBedRoomId()));
+        BedRoom bedRoom = null;
 
+        if (profileDto.getBedRoomId() != null) {
+            bedRoom = bedRoomRepository.findById(profileDto.getBedRoomId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getBedRoomId()));
+        }
         Profile profile = profileRepository.findByUser(user).orElse(new Profile());
         profile.setFullName(profileDto.getFullName());
         profile.setProfilePicture(profileDto.getProfilePicture());
@@ -43,15 +46,19 @@ public class ProfileService {
         profile.setBio(profileDto.getBio());
         profile.setPhoneNumber(profileDto.getPhoneNumber());
         profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
-        profile.setBedRoom(bedRoom);
         profile.setUser(user);
         profile.setAddress(addressMapper.toEntity(profileDto.getAddress()));
-
+        profile.setBedRoom(bedRoom);
+        
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
     }
 
     public ProfileDto getProfileByUserId(UUID userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+
         Profile profile = profileRepository.findByUserId(userId).orElse(new Profile());
         return profileMapper.toDto(profile);
     }

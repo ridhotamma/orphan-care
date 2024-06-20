@@ -1,6 +1,7 @@
 package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.RoleType;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -69,10 +69,14 @@ public class UserService {
         return convertToDto(updatedUser);
     }
 
-    public UserDto changeUserPassword(ChangePasswordUserDto changePasswordUserDto) throws AccessDeniedException {
+    public UserDto changeUserPassword(ChangePasswordUserDto changePasswordUserDto) throws BadRequestException {
         String currentUsername = getCurrentUsername();
         User existingUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
+
+        if (!existingUser.getPassword().equals(passwordEncoder.encode(changePasswordUserDto.getOldPassword()))) {
+            throw new BadRequestException("Old password is wrong");
+        }
 
         existingUser.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
         User updatedUser = userRepository.save(existingUser);

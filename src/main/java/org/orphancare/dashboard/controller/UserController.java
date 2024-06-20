@@ -2,20 +2,20 @@ package org.orphancare.dashboard.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.orphancare.dashboard.dto.ChangePasswordUserDto;
 import org.orphancare.dashboard.dto.CreateUserDto;
 import org.orphancare.dashboard.dto.UpdateUserDto;
-import org.orphancare.dashboard.dto.ChangePasswordUserDto;
 import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/public/users")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -30,12 +30,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserDto updateUserDto) {
         UserDto updatedUser = userService.updateUser(id, updateUserDto);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    @PutMapping("/change-password")
-    public ResponseEntity<UserDto> changeUserPassword(@Valid @RequestBody ChangePasswordUserDto changePasswordUserDto) throws AccessDeniedException {
-        UserDto updatedUser = userService.changeUserPassword(changePasswordUserDto);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -55,5 +49,11 @@ public class UserController {
     public ResponseEntity<List<UserDto.UserWithProfileDto>> getAllUsersWithShortProfile() {
         List<UserDto.UserWithProfileDto> users = userService.getAllUsersWithShortProfile();
         return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<UserDto> changeUserPassword(@Valid @RequestBody ChangePasswordUserDto changePasswordUserDto) throws BadRequestException {
+        UserDto updatedUser = userService.changeUserPassword(changePasswordUserDto);
+        return ResponseEntity.ok(updatedUser);
     }
 }
