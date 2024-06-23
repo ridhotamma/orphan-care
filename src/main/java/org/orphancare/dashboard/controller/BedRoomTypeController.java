@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/public/bedroom-types")
+@RequestMapping("/api/admin/bedroom-types")
 @RequiredArgsConstructor
 public class BedRoomTypeController {
 

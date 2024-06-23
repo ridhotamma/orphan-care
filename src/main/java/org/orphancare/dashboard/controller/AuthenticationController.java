@@ -1,12 +1,12 @@
 package org.orphancare.dashboard.controller;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.AuthenticationRequest;
 import org.orphancare.dashboard.dto.AuthenticationResponse;
 import org.orphancare.dashboard.service.CustomUserDetailsService;
 import org.orphancare.dashboard.security.JwtUtil;
-import org.orphancare.dashboard.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +22,6 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
-    private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")

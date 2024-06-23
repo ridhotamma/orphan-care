@@ -25,6 +25,6 @@ public class GuardianType {
     @Column(nullable = false, unique = true)
     String name;
 
-    @OneToMany(mappedBy = "guardianType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "guardianType", cascade = CascadeType.ALL)
     private Set<Guardian> guardians;
 }

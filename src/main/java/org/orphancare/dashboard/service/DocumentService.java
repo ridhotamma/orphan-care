@@ -27,7 +27,7 @@ public class DocumentService {
     private final UserRepository userRepository;
     private final DocumentMapper documentMapper;
 
-    public DocumentDto createDocument(UUID userId, DocumentDto documentDto) {
+    public DocumentDto.Response createDocument(UUID userId, DocumentDto documentDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
         DocumentType documentType = documentTypeRepository.findById(documentDto.getDocumentTypeId())
@@ -38,7 +38,7 @@ public class DocumentService {
         document.setDocumentType(documentType);
 
         Document savedDocument = documentRepository.save(document);
-        return documentMapper.toDto(savedDocument);
+        return documentMapper.toResponseDto(savedDocument);
     }
 
     public DocumentDto updateDocument(UUID documentId, DocumentDto documentDto) {

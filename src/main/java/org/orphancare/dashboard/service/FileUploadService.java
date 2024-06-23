@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.config.AwsPropertiesConfig;
 import org.orphancare.dashboard.dto.UploadResponse;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FileUploadService {
 
     private final S3Client s3Client;

@@ -20,10 +20,10 @@ public class DocumentController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<DocumentDto> createDocument(
+    public ResponseEntity<DocumentDto.Response> createDocument(
             @PathVariable UUID userId,
             @Valid @RequestBody DocumentDto documentDto) {
-        DocumentDto createdDocument = documentService.createDocument(userId, documentDto);
+        DocumentDto.Response createdDocument = documentService.createDocument(userId, documentDto);
         return ResponseEntity.ok(createdDocument);
     }
 

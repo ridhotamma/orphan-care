@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/public/guardian-types")
+@RequestMapping("/api/admin/guardian-types")
 @RequiredArgsConstructor
 public class GuardianTypeController {
 

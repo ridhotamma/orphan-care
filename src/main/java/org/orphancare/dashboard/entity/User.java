@@ -39,7 +39,7 @@ public class User {
     @NoWhiteSpace
     private String username;
 
-    @ElementCollection(targetClass = RoleType.class)
+    @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")

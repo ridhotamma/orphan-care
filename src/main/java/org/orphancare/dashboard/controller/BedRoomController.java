@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/public/bedrooms")
+@RequestMapping("/api/admin/bedrooms")
 @RequiredArgsConstructor
 public class BedRoomController {
 
