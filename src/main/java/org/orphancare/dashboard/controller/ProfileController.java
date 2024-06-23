@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.ProfileDto;
 import org.orphancare.dashboard.service.ProfileService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -17,6 +18,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PutMapping("/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<ProfileDto> createOrUpdateProfile(
             @PathVariable UUID userId,
             @Valid @RequestBody ProfileDto profileDto) {
@@ -25,6 +27,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable UUID userId) {
         ProfileDto profileDto = profileService.getProfileByUserId(userId);
         return ResponseEntity.ok(profileDto);

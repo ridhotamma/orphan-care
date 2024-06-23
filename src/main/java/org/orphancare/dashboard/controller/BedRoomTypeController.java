@@ -43,7 +43,7 @@ public class BedRoomTypeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBedRoomType(@PathVariable UUID id) {
-        bedRoomTypeService.deleteBedRoomType(id);
+        bedRoomTypeService.deleteBedRoomTypeById(id);
         return ResponseEntity.noContent().build();
     }
 }

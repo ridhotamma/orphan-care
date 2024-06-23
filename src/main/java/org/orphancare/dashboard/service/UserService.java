@@ -3,12 +3,10 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
-import org.orphancare.dashboard.entity.Profile;
-import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
-import org.orphancare.dashboard.repository.ProfileRepository;
+import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,8 +24,8 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     public UserDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
@@ -36,14 +34,10 @@ public class UserService {
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
             throw new UserAlreadyExistsException("Username is already in use");
         }
-        User user = new User();
-        user.setEmail(createUserDto.getEmail());
+        User user = userMapper.toEntity(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        user.setUsername(createUserDto.getUsername());
-        user.setRoles(createUserDto.getRoles().stream().map(RoleType::valueOf).collect(Collectors.toSet()));
-        user.setActive(createUserDto.isActive());
         User savedUser = userRepository.save(user);
-        return convertToDto(savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     public UserDto updateUser(UUID userId, UpdateUserDto updateUserDto) {
@@ -60,27 +54,32 @@ public class UserService {
             throw new UserAlreadyExistsException("Username is already in use");
         }
 
-        existingUser.setEmail(updateUserDto.getEmail() != null ? updateUserDto.getEmail() : existingUser.getEmail());
-        existingUser.setUsername(updateUserDto.getUsername() != null ? updateUserDto.getUsername() : existingUser.getUsername());
-        existingUser.setRoles(updateUserDto.getRoles() != null ? updateUserDto.getRoles().stream().map(RoleType::valueOf).collect(Collectors.toSet()) : existingUser.getRoles());
-        existingUser.setActive(updateUserDto.isActive());
+        userMapper.updateUserFromDto(updateUserDto, existingUser);
 
         User updatedUser = userRepository.save(existingUser);
-        return convertToDto(updatedUser);
+        return userMapper.toDto(updatedUser);
     }
 
-    public UserDto changeUserPassword(ChangePasswordUserDto changePasswordUserDto) throws BadRequestException {
+    public UserDto changeUserPassword(UserPasswordChangeDto changePasswordUserDto) throws BadRequestException {
         String currentUsername = getCurrentUsername();
         User existingUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
 
-        if (!existingUser.getPassword().equals(passwordEncoder.encode(changePasswordUserDto.getOldPassword()))) {
+        if (!passwordEncoder.matches(changePasswordUserDto.getOldPassword(), existingUser.getPassword())) {
             throw new BadRequestException("Old password is wrong");
         }
 
         existingUser.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
         User updatedUser = userRepository.save(existingUser);
-        return convertToDto(updatedUser);
+        return userMapper.toDto(updatedUser);
+    }
+
+    public UserDto changeUserPasswordByAdmin(UserPasswordChangeDto.AdminChange adminChange) {
+        User existingUser = userRepository.findById(adminChange.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + adminChange.getUserId()));
+        existingUser.setPassword(passwordEncoder.encode(adminChange.getNewPassword()));
+        User updatedUser = userRepository.save(existingUser);
+        return userMapper.toDto(updatedUser);
     }
 
     public void deleteUser(UUID userId) {
@@ -93,40 +92,13 @@ public class UserService {
     public UserDto getUserById(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
-        return convertToDto(user);
+        return userMapper.toDto(user);
     }
 
     public List<UserDto.UserWithProfileDto> getAllUsersWithShortProfile() {
         return userRepository.findAll().stream()
-                .map(this::convertToWithProfileDto)
+                .map(userMapper::toUserWithProfileDto)
                 .collect(Collectors.toList());
-    }
-
-    private UserDto convertToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setUsername(user.getUsername());
-        userDto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
-        userDto.setActive(user.isActive());
-        return userDto;
-    }
-
-    private UserDto.UserWithProfileDto convertToWithProfileDto(User user) {
-        Profile profile = profileRepository.findByUserId(user.getId()).orElseGet(Profile::new);
-
-        ProfileDto.ShortResponse profileDto = new ProfileDto.ShortResponse();
-        profileDto.setFullName(profile.getFullName());
-        profileDto.setProfilePicture(profile.getProfilePicture());
-
-        UserDto.UserWithProfileDto userDto = new UserDto.UserWithProfileDto();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setUsername(user.getUsername());
-        userDto.setRoles(user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
-        userDto.setActive(user.isActive());
-        userDto.setProfile(profileDto);
-        return userDto;
     }
 
     private String getCurrentUsername() {

@@ -13,18 +13,23 @@ import java.util.UUID;
 @Data
 public class ProfileDto {
 
-    @NotBlank
-    private String fullName;
-
     private String profilePicture;
     private LocalDate birthday;
     private LocalDate joinDate;
     private LocalDate leaveDate;
     private String bio;
+    private UUID bedRoomId;
+
+    @NotBlank
+    private String fullName;
 
     @Valid
     private AddressDto address;
-    private UUID bedRoomId;
+
+    @Valid
+    private GuardianDto guardian;
+
+    @Valid
     private BedRoomDto bedRoom;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")

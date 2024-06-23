@@ -50,7 +50,7 @@ public class BedRoomTypeService {
         return bedRoomTypeMapper.toDto(bedRoomTypeRepository.save(existingBedRoomType));
     }
 
-    public void deleteBedRoomType(UUID id) {
+    public void deleteBedRoomTypeById(UUID id) {
         if (!bedRoomTypeRepository.existsById(id)) {
             throw new ResourceNotFoundException("Bed room type not found with id: " + id);
         }

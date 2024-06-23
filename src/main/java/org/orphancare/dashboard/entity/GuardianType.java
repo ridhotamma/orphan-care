@@ -9,23 +9,22 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "document_types")
+@Table(name = "guardian_types")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentType {
-
+public class GuardianType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    String type;
 
     @Column(nullable = false, unique = true)
-    private String type;
+    String name;
 
-    @OneToMany(mappedBy = "documentType", cascade = CascadeType.ALL)
-    private Set<Document> documents;
+    @OneToMany(mappedBy = "guardianType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Guardian> guardians;
 }
