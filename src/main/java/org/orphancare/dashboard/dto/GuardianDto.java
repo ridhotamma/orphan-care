@@ -29,7 +29,7 @@ public class GuardianDto {
         private UUID id;
         private String fullName;
         private String phoneNumber;
-        private AddressDto addressDto;
+        private AddressDto address;
         private GuardianTypeDto guardianType;
     }
 }

@@ -15,7 +15,7 @@ public interface GuardianMapper {
     Guardian toEntity(GuardianDto guardianDto);
 
     @Mapping(source = "guardianType", target = "guardianType")
-    @Mapping(source = "address", target = "addressDto")
+    @Mapping(source = "address", target = "address")
     GuardianDto.Response toResponseDto(Guardian guardian);
 
     void updateGuardianFromDto(GuardianDto guardianDto, @MappingTarget Guardian guardian);

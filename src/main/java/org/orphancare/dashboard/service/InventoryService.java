@@ -27,7 +27,7 @@ public class InventoryService {
     public List<InventoryDto> getAllInventories() {
         return inventoryRepository.findAll()
                 .stream()
-                .map(inventoryMapper::inventoryToInventoryDto)
+                .map(inventoryMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -35,18 +35,18 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
 
-        return inventoryMapper.inventoryToInventoryDto(inventory);
+        return inventoryMapper.toDto(inventory);
     }
 
     public InventoryDto createInventory(InventoryDto inventoryDto) {
         InventoryType inventoryType = inventoryTypeRepository.findById(inventoryDto.getInventoryTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Inventory type not found"));
 
-        Inventory inventory = inventoryMapper.inventoryDtoToInventory(inventoryDto);
+        Inventory inventory = inventoryMapper.toEntity(inventoryDto);
         inventory.setInventoryType(inventoryType);
         inventory = inventoryRepository.save(inventory);
 
-        return inventoryMapper.inventoryToInventoryDto(inventory);
+        return inventoryMapper.toDto(inventory);
     }
 
     public InventoryDto updateInventory(UUID id, InventoryDto inventoryDto) {
@@ -62,7 +62,7 @@ public class InventoryService {
 
         existingInventory = inventoryRepository.save(existingInventory);
 
-        return inventoryMapper.inventoryToInventoryDto(existingInventory);
+        return inventoryMapper.toDto(existingInventory);
     }
 
     public void deleteInventory(UUID id) {

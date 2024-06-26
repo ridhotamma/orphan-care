@@ -8,8 +8,9 @@ import org.orphancare.dashboard.entity.Inventory;
 @Mapper(componentModel = "spring")
 public interface InventoryMapper {
     @Mapping(source = "inventoryType.id", target = "inventoryTypeId")
-    InventoryDto inventoryToInventoryDto(Inventory inventory);
+    InventoryDto toDto(Inventory inventory);
 
     @Mapping(source = "inventoryTypeId", target = "inventoryType.id")
-    Inventory inventoryDtoToInventory(InventoryDto inventoryDto);
+    @Mapping(source = "inventoryType", target = "inventoryType")
+    Inventory toEntity(InventoryDto inventoryDto);
 }
