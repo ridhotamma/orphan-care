@@ -8,6 +8,7 @@ import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final RequestUtil requestUtil;
 
     public UserDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
@@ -61,7 +63,7 @@ public class UserService {
     }
 
     public UserDto changeUserPassword(UserPasswordChangeDto changePasswordUserDto) throws BadRequestException {
-        String currentUsername = getCurrentUsername();
+        String currentUsername = requestUtil.getCurrentUsername();
         User existingUser = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
 
@@ -99,14 +101,5 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserWithProfileDto)
                 .collect(Collectors.toList());
-    }
-
-    private String getCurrentUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            return principal.toString();
-        }
     }
 }

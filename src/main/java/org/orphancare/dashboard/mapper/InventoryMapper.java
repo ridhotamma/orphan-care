@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.orphancare.dashboard.dto.InventoryDto;
 import org.orphancare.dashboard.entity.Inventory;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface InventoryMapper {
     @Mapping(source = "inventoryType.id", target = "inventoryTypeId")
     InventoryDto inventoryToInventoryDto(Inventory inventory);

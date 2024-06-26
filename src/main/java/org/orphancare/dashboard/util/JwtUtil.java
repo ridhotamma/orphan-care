@@ -1,4 +1,4 @@
-package org.orphancare.dashboard.security;
+package org.orphancare.dashboard.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

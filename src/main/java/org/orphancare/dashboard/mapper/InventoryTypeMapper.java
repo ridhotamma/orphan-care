@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface InventoryTypeMapper {
     InventoryTypeDto toDto(InventoryType inventoryType);
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/inventory-types")
+@RequestMapping("/api/admin/inventory-types")
 @RequiredArgsConstructor
 public class InventoryTypeController {
 
