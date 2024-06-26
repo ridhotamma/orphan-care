@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.config;
 
+import io.micrometer.common.lang.NonNullApi;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.security.JwtFilter;
 import org.orphancare.dashboard.security.JwtAuthenticationEntryPoint;
@@ -17,11 +18,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@NonNullApi
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -52,5 +56,15 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
     }
 }
