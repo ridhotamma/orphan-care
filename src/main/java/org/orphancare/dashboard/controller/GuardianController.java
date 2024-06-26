@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.GuardianDto;
 import org.orphancare.dashboard.service.GuardianService;
@@ -18,13 +19,13 @@ public class GuardianController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public GuardianDto createGuardian(@RequestBody GuardianDto guardianDto) {
+    public GuardianDto.Response createGuardian(@Valid @RequestBody GuardianDto guardianDto) {
         return guardianService.createGuardian(guardianDto);
     }
 
     @PutMapping("/{guardianId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public GuardianDto updateGuardian(@PathVariable UUID guardianId, @RequestBody GuardianDto guardianDto) {
+    public GuardianDto.Response updateGuardian(@PathVariable UUID guardianId, @Valid @RequestBody GuardianDto guardianDto) {
         return guardianService.updateGuardian(guardianId, guardianDto);
     }
 

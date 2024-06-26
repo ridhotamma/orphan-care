@@ -34,14 +34,14 @@ public class GuardianTypeController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GuardianTypeDto> createGuardianType(@PathVariable @Valid GuardianTypeDto guardianTypeDto) {
+    public ResponseEntity<GuardianTypeDto> createGuardianType(@RequestBody @Valid GuardianTypeDto guardianTypeDto) {
         GuardianTypeDto createdGuardianType = guardianTypeService.createGuardianType(guardianTypeDto);
         return ResponseEntity.ok(createdGuardianType);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GuardianTypeDto> updateGuardianType(@PathVariable UUID id, @PathVariable @Valid GuardianTypeDto guardianTypeDto) {
+    public ResponseEntity<GuardianTypeDto> updateGuardianType(@PathVariable UUID id, @RequestBody @Valid GuardianTypeDto guardianTypeDto) {
         GuardianTypeDto updatedGuardianType = guardianTypeService.updateGuardianType(id, guardianTypeDto);
         return ResponseEntity.ok(updatedGuardianType);
     }

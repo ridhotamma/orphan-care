@@ -24,7 +24,7 @@ public class GuardianService {
     private final GuardianTypeRepository guardianTypeRepository;
     private final GuardianMapper guardianMapper;
 
-    public GuardianDto createGuardian(GuardianDto guardianDto) {
+    public GuardianDto.Response createGuardian(GuardianDto guardianDto) {
         GuardianType guardianType = guardianTypeRepository.findById(guardianDto.getGuardianTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + guardianDto.getGuardianTypeId()));
 
@@ -32,10 +32,10 @@ public class GuardianService {
         guardian.setGuardianType(guardianType);
 
         Guardian savedGuardian = guardianRepository.save(guardian);
-        return guardianMapper.toDto(savedGuardian);
+        return guardianMapper.toResponseDto(savedGuardian);
     }
 
-    public GuardianDto updateGuardian(UUID guardianId, GuardianDto guardianDto) {
+    public GuardianDto.Response updateGuardian(UUID guardianId, GuardianDto guardianDto) {
         Guardian guardian = guardianRepository.findById(guardianId)
                 .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + guardianId));
 
@@ -46,7 +46,7 @@ public class GuardianService {
         guardian.setGuardianType(guardianType);
 
         Guardian updatedGuardian = guardianRepository.save(guardian);
-        return guardianMapper.toDto(updatedGuardian);
+        return guardianMapper.toResponseDto(updatedGuardian);
     }
 
     public void deleteGuardian(UUID guardianId) {
