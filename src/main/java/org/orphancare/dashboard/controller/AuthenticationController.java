@@ -36,7 +36,7 @@ public class AuthenticationController {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-
-        return new AuthenticationResponse(jwt);
+        final String username = userDetails.getUsername();
+        return new AuthenticationResponse(jwt, username);
     }
 }

@@ -70,11 +70,4 @@ public class UserController {
         UserDto updatedUser = userService.changeUserPasswordByAdmin(userPasswordChangeDto);
         return ResponseEntity.ok(updatedUser);
     }
-
-    @GetMapping("/admin/users/current-user")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<UserDto.CurrentUserDto> getCurrentUser() {
-        UserDto.CurrentUserDto updatedUser = userService.getCurrentUserWithProfile();
-        return ResponseEntity.ok(updatedUser);
-    }
 }

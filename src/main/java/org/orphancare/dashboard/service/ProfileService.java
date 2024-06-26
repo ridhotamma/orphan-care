@@ -2,13 +2,16 @@ package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.ProfileDto;
+import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.entity.*;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.AddressMapper;
 import org.orphancare.dashboard.mapper.ProfileMapper;
+import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +29,8 @@ public class ProfileService {
     private final BedRoomRepository bedRoomRepository;
     private final ProfileMapper profileMapper;
     private final AddressMapper addressMapper;
+    private final UserMapper userMapper;
+    private final RequestUtil requestUtil;
 
     public ProfileDto createOrUpdateProfile(UUID userId, ProfileDto profileDto) {
         User user = userRepository.findById(userId)
@@ -61,5 +66,12 @@ public class ProfileService {
 
         Profile profile = profileRepository.findByUserId(userId).orElse(new Profile());
         return profileMapper.toDto(profile);
+    }
+
+    public UserDto.CurrentUserDto getCurrentUserWithProfile() {
+        String currentUsername = requestUtil.getCurrentUsername();
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
+        return userMapper.toCurrentUserDto(user);
     }
 }

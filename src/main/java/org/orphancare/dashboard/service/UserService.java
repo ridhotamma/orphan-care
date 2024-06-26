@@ -102,11 +102,4 @@ public class UserService {
                 .map(userMapper::toUserWithProfileDto)
                 .collect(Collectors.toList());
     }
-
-    public UserDto.CurrentUserDto getCurrentUserWithProfile() {
-        String currentUsername = requestUtil.getCurrentUsername();
-        User user = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
-        return userMapper.toCurrentUserDto(user);
-    }
 }

@@ -3,6 +3,7 @@ package org.orphancare.dashboard.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.ProfileDto;
+import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.service.ProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,5 +32,12 @@ public class ProfileController {
     public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable UUID userId) {
         ProfileDto profileDto = profileService.getProfileByUserId(userId);
         return ResponseEntity.ok(profileDto);
+    }
+
+    @GetMapping("/current-user")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<UserDto.CurrentUserDto> getCurrentUser() {
+        UserDto.CurrentUserDto updatedUser = profileService.getCurrentUserWithProfile();
+        return ResponseEntity.ok(updatedUser);
     }
 }
