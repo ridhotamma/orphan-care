@@ -22,4 +22,14 @@ public class UserDto {
         private boolean active;
         private ProfileDto.ShortResponse profile;
     }
+
+    @Data
+    public static class CurrentUserDto {
+        private UUID id;
+        private String email;
+        private String username;
+        private Set<String> roles;
+        private boolean active;
+        private ProfileDto profile;
+    }
 }

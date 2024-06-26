@@ -20,4 +20,7 @@ public interface UserMapper {
     @Mapping(source = "profile.profilePicture", target = "profile.profilePicture")
     @Mapping(source = "profile.phoneNumber", target = "profile.phoneNumber")
     UserDto.UserWithProfileDto toUserWithProfileDto(User user);
+
+    @Mapping(source = "profile", target = "profile")
+    UserDto.CurrentUserDto toCurrentUserDto(User user);
 }
