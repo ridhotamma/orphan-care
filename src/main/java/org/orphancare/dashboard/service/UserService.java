@@ -3,6 +3,7 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
@@ -38,9 +39,15 @@ public class UserService {
         }
         User user = userMapper.toEntity(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+
+        Profile profile = userMapper.toProfileEntity(createUserDto);
+        profile.setUser(user);
+        user.setProfile(profile);
+
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
+
 
     public UserDto updateUser(UUID userId, UpdateUserDto updateUserDto) {
         User existingUser = userRepository.findById(userId)
