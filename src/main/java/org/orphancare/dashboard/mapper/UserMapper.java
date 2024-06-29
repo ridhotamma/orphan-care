@@ -21,6 +21,7 @@ public interface UserMapper {
     UserDto toDto(User user);
 
     @Mapping(source = "profile", target = "profile")
+    @Mapping(source = "profile.bedRoom.bedRoomType.id", target = "profile.bedRoom.bedRoomTypeId")
     UserDto.UserWithProfileDto toUserWithProfileDto(User user);
 
     @Mapping(source = "profile", target = "profile")
