@@ -10,6 +10,7 @@ import org.orphancare.dashboard.mapper.DocumentMapper;
 import org.orphancare.dashboard.repository.DocumentRepository;
 import org.orphancare.dashboard.repository.DocumentTypeRepository;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class DocumentService {
     private final DocumentTypeRepository documentTypeRepository;
     private final UserRepository userRepository;
     private final DocumentMapper documentMapper;
+    private final RequestUtil requestUtil;
 
     public DocumentDto.Response createDocument(UUID userId, DocumentDto documentDto) {
         User user = userRepository.findById(userId)
@@ -70,6 +72,14 @@ public class DocumentService {
 
     public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
         List<Document> documents = documentRepository.findByOwnerId(userId);
+        return documents.stream().map(documentMapper::toResponseDto).collect(Collectors.toList());
+    }
+
+public List<DocumentDto.Response> getCurrentUserDocuments() {
+        String currentUsername = requestUtil.getCurrentUsername();
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not exists with username " + currentUsername));
+        List<Document> documents = documentRepository.findByOwnerId(user.getId());
         return documents.stream().map(documentMapper::toResponseDto).collect(Collectors.toList());
     }
 }

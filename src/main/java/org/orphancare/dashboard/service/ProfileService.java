@@ -68,10 +68,10 @@ public class ProfileService {
         return profileMapper.toDto(profile);
     }
 
-    public UserDto.CurrentUserDto getCurrentUserWithProfile() {
+    public UserDto.UserWithProfileDto getCurrentUserWithProfile() {
         String currentUsername = requestUtil.getCurrentUsername();
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username " + currentUsername));
-        return userMapper.toCurrentUserDto(user);
+        return userMapper.toUserWithProfileDto(user);
     }
 }

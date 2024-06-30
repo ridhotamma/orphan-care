@@ -52,8 +52,8 @@ public class UserController {
 
     @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<UserDto.UserWithProfileDto>> getAllUsersWithShortProfile() {
-        List<UserDto.UserWithProfileDto> users = userService.getAllUsersWithShortProfile();
+    public ResponseEntity<List<UserDto.UserWithProfileDto>> getAllUsers() {
+        List<UserDto.UserWithProfileDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 

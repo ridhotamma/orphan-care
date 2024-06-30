@@ -24,9 +24,6 @@ public interface UserMapper {
     @Mapping(source = "profile.bedRoom.bedRoomType.id", target = "profile.bedRoom.bedRoomTypeId")
     UserDto.UserWithProfileDto toUserWithProfileDto(User user);
 
-    @Mapping(source = "profile", target = "profile")
-    UserDto.CurrentUserDto toCurrentUserDto(User user);
-
     @Mapping(source = "createUserDto.fullName", target = "fullName")
     @Mapping(source = "createUserDto.profilePicture", target = "profilePicture")
     @Mapping(source = "createUserDto.birthday", target = "birthday")

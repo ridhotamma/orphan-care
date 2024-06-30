@@ -104,7 +104,7 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public List<UserDto.UserWithProfileDto> getAllUsersWithShortProfile() {
+    public List<UserDto.UserWithProfileDto> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserWithProfileDto)
                 .collect(Collectors.toList());

@@ -36,8 +36,8 @@ public class ProfileController {
 
     @GetMapping("/current-user")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<UserDto.CurrentUserDto> getCurrentUser() {
-        UserDto.CurrentUserDto updatedUser = profileService.getCurrentUserWithProfile();
+    public ResponseEntity<UserDto.UserWithProfileDto> getCurrentUser() {
+        UserDto.UserWithProfileDto updatedUser = profileService.getCurrentUserWithProfile();
         return ResponseEntity.ok(updatedUser);
     }
 }

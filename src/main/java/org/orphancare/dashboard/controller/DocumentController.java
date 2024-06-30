@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/public/users/{userId}/documents")
+@RequestMapping("/api/public/users")
 @RequiredArgsConstructor
 public class DocumentController {
 
     private final DocumentService documentService;
 
-    @PostMapping
+    @PostMapping("/{userId}/documents")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<DocumentDto.Response> createDocument(
             @PathVariable UUID userId,
@@ -27,7 +27,7 @@ public class DocumentController {
         return ResponseEntity.ok(createdDocument);
     }
 
-    @PutMapping("/{documentId}")
+    @PutMapping("/{userId}/documents/{documentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<DocumentDto> updateDocument(
             @PathVariable UUID userId,
@@ -38,24 +38,31 @@ public class DocumentController {
         return ResponseEntity.ok(updatedDocument);
     }
 
-    @DeleteMapping("/{documentId}")
+    @DeleteMapping("/{userId}/documents/{documentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<Void> deleteDocument(@PathVariable UUID userId, @PathVariable UUID documentId) {
         documentService.deleteDocument(documentId);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{documentId}")
+    @GetMapping("/{userId}/documents/{documentId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<DocumentDto.Response> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
         DocumentDto.Response document = documentService.getDocumentById(documentId);
         return ResponseEntity.ok(document);
     }
 
-    @GetMapping
+    @GetMapping("/{userId}/documents")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<List<DocumentDto.Response>> getAllDocumentsByUserId(@PathVariable UUID userId) {
         List<DocumentDto.Response> documents = documentService.getAllDocumentsByUserId(userId);
+        return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/documents")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<List<DocumentDto.Response>> getCurrentUserDocuments() {
+        List<DocumentDto.Response> documents = documentService.getCurrentUserDocuments();
         return ResponseEntity.ok(documents);
     }
 }
