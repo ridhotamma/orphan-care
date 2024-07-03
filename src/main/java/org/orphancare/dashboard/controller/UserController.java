@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
+import org.orphancare.dashboard.entity.Gender;
 import org.orphancare.dashboard.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,8 +51,8 @@ public class UserController {
     @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PaginatedResponse<List<UserDto.UserWithProfileDto>>> getAllUsers(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String gender,
+            @RequestParam(required = false, defaultValue = "") String search,
+            @RequestParam(required = false) Gender gender,
             @RequestParam(required = false) String roles,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int perPage) {

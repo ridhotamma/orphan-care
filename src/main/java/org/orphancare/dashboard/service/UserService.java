@@ -3,6 +3,7 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
+import org.orphancare.dashboard.entity.Gender;
 import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -108,9 +108,12 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(String search, String gender, String roles, int page, int perPage) {
+    public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(String search, Gender gender, String roles, int page, int perPage) {
         Pageable pageable = PageRequest.of(page, perPage);
-        List<RoleType> roleList = (roles == null || roles.isEmpty()) ? Collections.emptyList() : Arrays.stream(roles.split(","))
+
+        List<RoleType> defaultRoleList = Arrays.asList(RoleType.ROLE_USER, RoleType.ROLE_ADMIN);
+
+        List<RoleType> roleList = (roles == null || roles.isEmpty()) ? defaultRoleList : Arrays.stream(roles.split(","))
                 .map(String::trim)
                 .map(RoleType::valueOf)
                 .collect(Collectors.toList());

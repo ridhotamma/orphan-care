@@ -1,8 +1,11 @@
 package org.orphancare.dashboard.config;
 
 import lombok.RequiredArgsConstructor;
+import org.orphancare.dashboard.entity.Gender;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
+import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +20,7 @@ import java.util.Set;
 public class DataInitializerConfig implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -40,8 +44,18 @@ public class DataInitializerConfig implements CommandLineRunner {
             user.setActive(active);
             user.setRoles(roles);
 
-            userRepository.save(user);
-            System.out.println("Admin user created successfully");
+            Profile profile = new Profile();
+            profile.setFullName("Admin PSAA Annajah");
+            profile.setGender(Gender.MALE);
+            profile.setUser(user);
+            user.setProfile(profile);
+
+            try {
+                userRepository.save(user);
+                System.out.println("Admin user created successfully");
+            } catch (Exception e) {
+                System.out.println("Failed: " + e);
+            }
         } else {
             System.out.println("Admin user already exists");
         }
