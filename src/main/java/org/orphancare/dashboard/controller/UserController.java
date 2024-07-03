@@ -8,11 +8,11 @@ import org.orphancare.dashboard.dto.CreateUserDto;
 import org.orphancare.dashboard.dto.UpdateUserDto;
 import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -52,8 +52,13 @@ public class UserController {
 
     @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<UserDto.UserWithProfileDto>> getAllUsers() {
-        List<UserDto.UserWithProfileDto> users = userService.getAllUsers();
+    public ResponseEntity<Page<UserDto.UserWithProfileDto>> getAllUsers(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String roles,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        Page<UserDto.UserWithProfileDto> users = userService.getAllUsers(search, gender, roles, page, perPage);
         return ResponseEntity.ok(users);
     }
 

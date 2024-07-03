@@ -4,18 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.Profile;
+import org.orphancare.dashboard.entity.RoleType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.orphancare.dashboard.util.RequestUtil;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -104,9 +108,13 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public List<UserDto.UserWithProfileDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::toUserWithProfileDto)
+    public Page<UserDto.UserWithProfileDto> getAllUsers(String search, String gender, String roles, int page, int perPage) {
+        Pageable pageable = PageRequest.of(page, perPage);
+        List<RoleType> roleList = (roles == null || roles.isEmpty()) ? Collections.emptyList() : Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .map(RoleType::valueOf)
                 .collect(Collectors.toList());
+        Page<User> userPage = userRepository.findBySearchGenderAndRoles(search, gender, roleList, pageable);
+        return userPage.map(userMapper::toUserWithProfileDto);
     }
 }
