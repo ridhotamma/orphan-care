@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.InventoryDto;
 import org.orphancare.dashboard.service.InventoryService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,8 +20,11 @@ public class InventoryController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<InventoryDto>> getAllInventories() {
-        List<InventoryDto> inventories = inventoryService.getAllInventories();
+    public ResponseEntity<Page<InventoryDto>> getAllInventories(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        Page<InventoryDto> inventories = inventoryService.getAllInventories(name, page, perPage);
         return ResponseEntity.ok(inventories);
     }
 

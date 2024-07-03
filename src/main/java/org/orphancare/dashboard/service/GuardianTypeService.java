@@ -2,7 +2,6 @@ package org.orphancare.dashboard.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.orphancare.dashboard.dto.GuardianDto;
 import org.orphancare.dashboard.dto.GuardianTypeDto;
 import org.orphancare.dashboard.entity.GuardianType;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;

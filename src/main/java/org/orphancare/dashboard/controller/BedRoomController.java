@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.BedRoomDto;
 import org.orphancare.dashboard.service.BedRoomService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,8 +20,11 @@ public class BedRoomController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<BedRoomDto>> getAllBedRooms() {
-        List<BedRoomDto> bedRooms = bedRoomService.getAllBedrooms();
+    public ResponseEntity<Page<BedRoomDto>> getAllBedRooms(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        Page<BedRoomDto> bedRooms = bedRoomService.getAllBedrooms(name, page, perPage);
         return ResponseEntity.ok(bedRooms);
     }
 

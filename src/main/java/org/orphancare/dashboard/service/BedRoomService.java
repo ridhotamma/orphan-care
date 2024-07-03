@@ -9,11 +9,12 @@ import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.BedRoomMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.BedRoomTypeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +25,12 @@ public class BedRoomService {
     private final BedRoomTypeRepository bedRoomTypeRepository;
     private final BedRoomMapper bedRoomMapper;
 
-    public List<BedRoomDto> getAllBedrooms() {
-        return bedRoomRepository.findAll()
-                .stream()
-                .map(bedRoomMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<BedRoomDto> getAllBedrooms(String name, int page, int perPage) {
+        Pageable pageable = PageRequest.of(page, perPage);
+        Page<BedRoom> bedRoomsPage = (name == null || name.isEmpty()) ?
+                bedRoomRepository.findAll(pageable) :
+                bedRoomRepository.findByNameContainingIgnoreCase(name, pageable);
+        return bedRoomsPage.map(bedRoomMapper::toDto);
     }
 
     public BedRoomDto getBedRoomById(UUID bedRoomId) {

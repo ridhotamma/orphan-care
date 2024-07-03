@@ -9,11 +9,12 @@ import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.InventoryMapper;
 import org.orphancare.dashboard.repository.InventoryRepository;
 import org.orphancare.dashboard.repository.InventoryTypeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +25,12 @@ public class InventoryService {
     private final InventoryTypeRepository inventoryTypeRepository;
     private final InventoryMapper inventoryMapper;
 
-    public List<InventoryDto> getAllInventories() {
-        return inventoryRepository.findAll()
-                .stream()
-                .map(inventoryMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<InventoryDto> getAllInventories(String name, int page, int perPage) {
+        Pageable pageable = PageRequest.of(page, perPage);
+        Page<Inventory> inventoriesPage = (name == null || name.isEmpty()) ?
+                inventoryRepository.findAll(pageable) :
+                inventoryRepository.findByNameContainingIgnoreCase(name, pageable);
+        return inventoriesPage.map(inventoryMapper::toDto);
     }
 
     public InventoryDto getInventoryById(UUID inventoryId) {
