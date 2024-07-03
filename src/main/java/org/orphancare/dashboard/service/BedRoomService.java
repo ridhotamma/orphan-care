@@ -3,6 +3,7 @@ package org.orphancare.dashboard.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.BedRoomDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.BedRoom;
 import org.orphancare.dashboard.entity.BedRoomType;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +28,24 @@ public class BedRoomService {
     private final BedRoomTypeRepository bedRoomTypeRepository;
     private final BedRoomMapper bedRoomMapper;
 
-    public Page<BedRoomDto> getAllBedrooms(String name, int page, int perPage) {
+    public PaginatedResponse<List<BedRoomDto>> getAllBedrooms(String name, int page, int perPage) {
         Pageable pageable = PageRequest.of(page, perPage);
         Page<BedRoom> bedRoomsPage = (name == null || name.isEmpty()) ?
                 bedRoomRepository.findAll(pageable) :
                 bedRoomRepository.findByNameContainingIgnoreCase(name, pageable);
-        return bedRoomsPage.map(bedRoomMapper::toDto);
+
+        List<BedRoomDto> bedRoomDtos = bedRoomsPage.getContent().stream()
+                .map(bedRoomMapper::toDto)
+                .collect(Collectors.toList());
+
+        PaginatedResponse.Meta meta = new PaginatedResponse.Meta(
+                bedRoomsPage.getNumber(),
+                bedRoomsPage.getSize(),
+                bedRoomsPage.getTotalElements(),
+                bedRoomsPage.getTotalPages()
+        );
+
+        return new PaginatedResponse<>(bedRoomDtos, meta);
     }
 
     public BedRoomDto getBedRoomById(UUID bedRoomId) {

@@ -108,13 +108,25 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public Page<UserDto.UserWithProfileDto> getAllUsers(String search, String gender, String roles, int page, int perPage) {
+    public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(String search, String gender, String roles, int page, int perPage) {
         Pageable pageable = PageRequest.of(page, perPage);
         List<RoleType> roleList = (roles == null || roles.isEmpty()) ? Collections.emptyList() : Arrays.stream(roles.split(","))
                 .map(String::trim)
                 .map(RoleType::valueOf)
                 .collect(Collectors.toList());
         Page<User> userPage = userRepository.findBySearchGenderAndRoles(search, gender, roleList, pageable);
-        return userPage.map(userMapper::toUserWithProfileDto);
+
+        List<UserDto.UserWithProfileDto> userDtos = userPage.getContent().stream()
+                .map(userMapper::toUserWithProfileDto)
+                .collect(Collectors.toList());
+
+        PaginatedResponse.Meta meta = new PaginatedResponse.Meta(
+                userPage.getNumber(),
+                userPage.getSize(),
+                userPage.getTotalElements(),
+                userPage.getTotalPages()
+        );
+
+        return new PaginatedResponse<>(userDtos, meta);
     }
 }
