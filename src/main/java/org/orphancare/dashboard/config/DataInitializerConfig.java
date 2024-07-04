@@ -31,7 +31,6 @@ public class DataInitializerConfig implements CommandLineRunner {
         boolean active = true;
         Set<RoleType> roles = new HashSet<>();
         roles.add(RoleType.ROLE_ADMIN);
-        roles.add(RoleType.ROLE_USER);
 
         Optional<User> existingUserByEmail = userRepository.findByEmail(email);
         Optional<User> existingUserByUsername = userRepository.findByUsername(username);
