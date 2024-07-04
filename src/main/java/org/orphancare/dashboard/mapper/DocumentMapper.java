@@ -12,6 +12,7 @@ public interface DocumentMapper {
     DocumentDto toDto(Document document);
 
     @Mapping(source = "documentTypeId", target = "documentType.id")
+    @Mapping(source = "documentType", target = "documentType")
     Document toEntity(DocumentDto documentDto);
 
     @Mapping(source = "documentType", target = "documentType")

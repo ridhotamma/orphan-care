@@ -1,47 +1,49 @@
 -- V1__Initial_migration.sql
 
--- Enum: RoleType
-CREATE TYPE RoleType AS ENUM (
-    'ROLE_ADMIN',
-    'ROLE_USER'
-);
-
--- Table: addresses
 CREATE TABLE addresses (
-    id UUID PRIMARY KEY,
+    id UUID NOT NULL,
     street VARCHAR(255),
     urban_village VARCHAR(255),
     subdistrict VARCHAR(255),
     city VARCHAR(255),
     province VARCHAR(255),
-    postal_code VARCHAR(10)
+    postal_code VARCHAR(5),
+    PRIMARY KEY (id)
 );
 
--- Table: document_types
+CREATE TABLE bedroom_types (
+    id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE bedrooms (
+    id UUID NOT NULL,
+    name VARCHAR(255),
+    bedroom_type_id UUID NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (bedroom_type_id) REFERENCES bedroom_types(id)
+);
+
 CREATE TABLE document_types (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
 );
 
--- Table: users
 CREATE TABLE users (
-    id UUID PRIMARY KEY,
+    id UUID NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL UNIQUE,
-    active BOOLEAN NOT NULL DEFAULT TRUE
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (id)
 );
 
--- Table: bedrooms
-CREATE TABLE bedrooms (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255),
-    bed_room_type VARCHAR(255) NOT NULL
-);
-
--- Table: profiles
 CREATE TABLE profiles (
-    id UUID PRIMARY KEY,
+    id UUID NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     profile_picture VARCHAR(255),
     birthday DATE,
@@ -49,30 +51,66 @@ CREATE TABLE profiles (
     leave_date DATE,
     bio TEXT,
     phone_number VARCHAR(25),
-    gender VARCHAR(255) NOT NULL,
+    gender VARCHAR(50) NOT NULL,
     user_id UUID NOT NULL,
     address_id UUID,
     bedroom_id UUID,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE CASCADE,
-    CONSTRAINT fk_bedroom FOREIGN KEY (bedroom_id) REFERENCES bedrooms (id)
+    guardian_id UUID,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (bedroom_id) REFERENCES bedrooms(id),
+    FOREIGN KEY (guardian_id) REFERENCES guardians(id)
 );
 
--- Table: documents
 CREATE TABLE documents (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    url VARCHAR(255) NOT NULL,
+    id UUID NOT NULL,
+    name VARCHAR(255),
+    url VARCHAR(255),
     owner_id UUID NOT NULL,
     document_type_id UUID NOT NULL,
-    CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT fk_document_type FOREIGN KEY (document_type_id) REFERENCES document_types (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (owner_id) REFERENCES users(id),
+    FOREIGN KEY (document_type_id) REFERENCES document_types(id)
 );
 
--- Table: user_roles
+CREATE TABLE guardians (
+    id UUID NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(25),
+    address_id UUID,
+    guardian_type_id UUID NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (address_id) REFERENCES addresses(id),
+    FOREIGN KEY (guardian_type_id) REFERENCES guardian_types(id)
+);
+
+CREATE TABLE guardian_types (
+    id UUID NOT NULL,
+    type VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE inventories (
+    id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    quantity BIGINT NOT NULL,
+    inventory_type_id UUID NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (inventory_type_id) REFERENCES inventory_types(id)
+);
+
+CREATE TABLE inventory_types (
+    id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    type VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE user_roles (
     user_id UUID NOT NULL,
-    role RoleType NOT NULL,
-    CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, role)
+    role VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

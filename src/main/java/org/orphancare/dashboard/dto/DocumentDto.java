@@ -23,6 +23,8 @@ public class DocumentDto {
     @NotNull
     private UUID documentTypeId;
 
+    private DocumentTypeDto documentType;
+
     @Data
     public static class Response {
         private UUID id;
@@ -36,6 +38,6 @@ public class DocumentDto {
         private String url;
 
         @NotNull
-        private DocumentType documentType;
+        private DocumentTypeDto documentType;
     }
 }
