@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.BedRoomDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.BedRoomService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
