@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.orphancare.dashboard.entity.Gender;
@@ -31,17 +32,22 @@ public class CreateUserDto {
     @ValidRoles
     private Set<String> roles;
 
+    @NotNull
     private boolean active;
 
     @NotBlank
     private String fullName;
 
+    @NotBlank
     private String profilePicture;
 
+    @NotNull
     private LocalDate birthday;
 
+    @NotNull
     private LocalDate joinDate;
 
+    @NotBlank
     private String bio;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
@@ -50,9 +56,14 @@ public class CreateUserDto {
     @NotNull
     private Gender gender;
 
+    @NotNull
+    @Valid
     private AddressDto address;
 
+    @NotNull
     private UUID bedRoomId;
 
-    private UUID guardianId;
+    @NotNull
+    @Valid
+    private GuardianDto guardian;
 }

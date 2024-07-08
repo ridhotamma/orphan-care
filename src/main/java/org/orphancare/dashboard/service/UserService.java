@@ -3,13 +3,13 @@ package org.orphancare.dashboard.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
-import org.orphancare.dashboard.entity.Gender;
-import org.orphancare.dashboard.entity.Profile;
-import org.orphancare.dashboard.entity.RoleType;
-import org.orphancare.dashboard.entity.User;
+import org.orphancare.dashboard.entity.*;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.exception.UserAlreadyExistsException;
+import org.orphancare.dashboard.mapper.AddressMapper;
+import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
+import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.data.domain.Page;
@@ -30,26 +30,40 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BedRoomRepository bedRoomRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final AddressMapper addressMapper;
+    private final GuardianMapper guardianMapper;
     private final RequestUtil requestUtil;
 
-    public UserDto createUser(CreateUserDto createUserDto) {
+    public UserDto.UserWithProfileDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
             throw new UserAlreadyExistsException("Email is already in use");
         }
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
             throw new UserAlreadyExistsException("Username is already in use");
         }
+
+        BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
+
         User user = userMapper.toEntity(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
 
+        Address address = addressMapper.toEntity(createUserDto.getAddress());
         Profile profile = userMapper.toProfileEntity(createUserDto);
+        Guardian guardian = guardianMapper.toEntity(createUserDto.getGuardian());
+
         profile.setUser(user);
+        profile.setBedRoom(bedRoom);
+        profile.setAddress(address);
+        profile.setGuardian(guardian);
+
         user.setProfile(profile);
 
         User savedUser = userRepository.save(user);
-        return userMapper.toDto(savedUser);
+        return userMapper.toUserWithProfileDto(savedUser);
     }
 
 
