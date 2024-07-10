@@ -16,6 +16,7 @@ public interface DocumentMapper {
     Document toEntity(DocumentDto documentDto);
 
     @Mapping(source = "documentType", target = "documentType")
+    @Mapping(source = "createdAt", target = "createdAt")
     DocumentDto.Response toResponseDto(Document document);
 
     void updateDocumentFromDto(DocumentDto documentDto, @MappingTarget Document document);

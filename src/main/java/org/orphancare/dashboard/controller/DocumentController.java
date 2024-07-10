@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -57,6 +58,13 @@ public class DocumentController {
     public ResponseEntity<List<DocumentDto.Response>> getAllDocumentsByUserId(@PathVariable UUID userId) {
         List<DocumentDto.Response> documents = documentService.getAllDocumentsByUserId(userId);
         return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/{userId}/documents-range")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<List<DocumentDto.GroupByDateRange>> getDocumentsGroupedByDate(@PathVariable UUID userId) {
+        List<DocumentDto.GroupByDateRange> groupedDocuments = documentService.getDocumentsGroupedByDate(userId);
+        return ResponseEntity.ok(groupedDocuments);
     }
 
     @GetMapping("/documents")

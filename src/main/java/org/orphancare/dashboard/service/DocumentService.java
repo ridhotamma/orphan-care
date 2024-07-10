@@ -14,8 +14,8 @@ import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,14 +72,55 @@ public class DocumentService {
 
     public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
         List<Document> documents = documentRepository.findByOwnerId(userId);
-        return documents.stream().map(documentMapper::toResponseDto).collect(Collectors.toList());
+        return documents.stream()
+                .sorted(Comparator.comparing(Document::getCreatedAt).reversed())
+                .map(documentMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 
-public List<DocumentDto.Response> getCurrentUserDocuments() {
+    public List<DocumentDto.Response> getCurrentUserDocuments() {
         String currentUsername = requestUtil.getCurrentUsername();
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists with username " + currentUsername));
         List<Document> documents = documentRepository.findByOwnerId(user.getId());
-        return documents.stream().map(documentMapper::toResponseDto).collect(Collectors.toList());
+        return documents.stream()
+                .sorted(Comparator.comparing(Document::getCreatedAt).reversed())
+                .map(documentMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<DocumentDto.GroupByDateRange> getDocumentsGroupedByDate(UUID userId) {
+        List<Document> documents = documentRepository.findByOwnerId(userId);
+        Map<String, List<DocumentDto.Response>> groupedDocuments = documents.stream()
+                .map(documentMapper::toResponseDto)
+                .collect(Collectors.groupingBy(this::getDateRange));
+
+        List<DocumentDto.GroupByDateRange> response = new ArrayList<>();
+
+        response.add(new DocumentDto.GroupByDateRange("TODAY", "Today", groupedDocuments.getOrDefault("TODAY", new ArrayList<>())));
+        response.add(new DocumentDto.GroupByDateRange("LAST_7_DAYS", "Last 7 Days", groupedDocuments.getOrDefault("LAST_7_DAYS", new ArrayList<>())));
+        response.add(new DocumentDto.GroupByDateRange("LAST_14_DAYS", "Last 14 Days", groupedDocuments.getOrDefault("LAST_14_DAYS", new ArrayList<>())));
+        response.add(new DocumentDto.GroupByDateRange("LAST_30_DAYS", "Last 30 Days", groupedDocuments.getOrDefault("LAST_30_DAYS", new ArrayList<>())));
+        response.add(new DocumentDto.GroupByDateRange("OLDER", "Older", groupedDocuments.getOrDefault("OLDER", new ArrayList<>())));
+
+        return response;
+    }
+
+
+    private String getDateRange(DocumentDto.Response document) {
+        LocalDate createdDate = document.getCreatedAt().toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        if (createdDate.equals(today)) {
+            return "TODAY";
+        } else if (createdDate.isAfter(today.minusDays(7))) {
+            return "LAST_7_DAYS";
+        } else if (createdDate.isAfter(today.minusDays(14))) {
+            return "LAST_14_DAYS";
+        } else if (createdDate.isAfter(today.minusDays(30))) {
+            return "LAST_30_DAYS";
+        } else {
+            return "OLDER";
+        }
     }
 }

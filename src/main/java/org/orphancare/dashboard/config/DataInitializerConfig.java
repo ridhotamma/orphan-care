@@ -28,7 +28,9 @@ public class DataInitializerConfig implements CommandLineRunner {
         String email = "admin@psaa.com";
         String password = "Admin123";
         String username = "adminpsaa";
+        String profilePicture = "https://images.alphacoders.com/475/475526.jpg";
         boolean active = true;
+
         Set<RoleType> roles = new HashSet<>();
         roles.add(RoleType.ROLE_ADMIN);
 
@@ -47,6 +49,8 @@ public class DataInitializerConfig implements CommandLineRunner {
             profile.setFullName("Admin PSAA Annajah");
             profile.setGender(Gender.MALE);
             profile.setUser(user);
+            profile.setProfilePicture(profilePicture);
+
             user.setProfile(profile);
 
             try {
