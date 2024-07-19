@@ -25,7 +25,6 @@ public class DocumentDto {
     @NotNull
     private UUID documentTypeId;
 
-    @NotNull
     private LocalDateTime createdAt;
 
     private DocumentTypeDto documentType;
