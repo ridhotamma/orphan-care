@@ -38,4 +38,11 @@ public class DonationDto {
 
     @NotNull
     private UUID donationTypeId;
+
+    private DonationTypeDto donationType;
+
+    @NotNull
+    private UUID unitId;
+
+    private UnitDto unit;
 }

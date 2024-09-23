@@ -6,10 +6,12 @@ import org.orphancare.dashboard.dto.InventoryDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Inventory;
 import org.orphancare.dashboard.entity.InventoryType;
+import org.orphancare.dashboard.entity.Unit;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.InventoryMapper;
 import org.orphancare.dashboard.repository.InventoryRepository;
 import org.orphancare.dashboard.repository.InventoryTypeRepository;
+import org.orphancare.dashboard.repository.UnitRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryTypeRepository inventoryTypeRepository;
     private final InventoryMapper inventoryMapper;
+    private final UnitRepository unitRepository;
 
     public PaginatedResponse<List<InventoryDto>> getAllInventories(String name, int page, int perPage) {
         Pageable pageable = PageRequest.of(page, perPage);
@@ -59,8 +62,12 @@ public class InventoryService {
         InventoryType inventoryType = inventoryTypeRepository.findById(inventoryDto.getInventoryTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Inventory type not found"));
 
+        Unit unit = unitRepository.findById(inventoryDto.getUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
+
         Inventory inventory = inventoryMapper.toEntity(inventoryDto);
         inventory.setInventoryType(inventoryType);
+        inventory.setUnit(unit);
         inventory = inventoryRepository.save(inventory);
 
         return inventoryMapper.toDto(inventory);
@@ -73,9 +80,13 @@ public class InventoryService {
         InventoryType inventoryType = inventoryTypeRepository.findById(inventoryDto.getInventoryTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Inventory type not found"));
 
+        Unit unit = unitRepository.findById(inventoryDto.getUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
+
         existingInventory.setName(inventoryDto.getName());
         existingInventory.setQuantity(inventoryDto.getQuantity());
         existingInventory.setInventoryType(inventoryType);
+        existingInventory.setUnit(unit);
 
         existingInventory = inventoryRepository.save(existingInventory);
 

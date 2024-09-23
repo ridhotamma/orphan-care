@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "inventories")
 @Data
@@ -30,6 +29,10 @@ public class Inventory {
     @ManyToOne
     @JoinColumn(name = "inventory_type_id", nullable = false)
     InventoryType inventoryType;
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    Unit unit;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

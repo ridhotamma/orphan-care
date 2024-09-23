@@ -2,29 +2,23 @@ package org.orphancare.dashboard.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.util.UUID;
 
 @Data
-public class InventoryDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UnitDto {
     private UUID id;
 
     @NotBlank
     @NotNull
     private String name;
 
+    @NotBlank
     @NotNull
-    private BigInteger quantity;
-
-    @NotNull
-    private UUID inventoryTypeId;
-
-    private InventoryTypeDto inventoryType;
-
-    @NotNull
-    private UUID unitId;
-
-    private UnitDto unit;
+    private String type;
 }

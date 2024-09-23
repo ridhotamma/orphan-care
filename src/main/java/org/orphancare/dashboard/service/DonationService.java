@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DonationDto;
 import org.orphancare.dashboard.entity.Donation;
 import org.orphancare.dashboard.entity.DonationType;
+import org.orphancare.dashboard.entity.Unit;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.DonationMapper;
 import org.orphancare.dashboard.repository.DonationRepository;
 import org.orphancare.dashboard.repository.DonationTypeRepository;
+import org.orphancare.dashboard.repository.UnitRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class DonationService {
 
     private final DonationRepository donationRepository;
     private final DonationTypeRepository donationTypeRepository;
+    private final UnitRepository unitRepository;
     private final DonationMapper donationMapper;
 
     public List<DonationDto> getAllDonations() {
@@ -42,7 +45,10 @@ public class DonationService {
         Donation donation = donationMapper.toEntity(donationDto);
         DonationType donationType = donationTypeRepository.findById(donationDto.getDonationTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Donation type not found"));
+        Unit unit = unitRepository.findById(donationDto.getUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
         donation.setDonationType(donationType);
+        donation.setUnit(unit);
         return donationMapper.toDto(donationRepository.save(donation));
     }
 
@@ -59,6 +65,10 @@ public class DonationService {
         DonationType donationType = donationTypeRepository.findById(donationDto.getDonationTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Donation type not found"));
         existingDonation.setDonationType(donationType);
+
+        Unit unit = unitRepository.findById(donationDto.getUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found"));
+        existingDonation.setUnit(unit);
 
         return donationMapper.toDto(donationRepository.save(existingDonation));
     }

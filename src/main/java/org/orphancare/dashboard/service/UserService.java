@@ -66,7 +66,6 @@ public class UserService {
         return userMapper.toUserWithProfileDto(savedUser);
     }
 
-
     public UserDto updateUser(UUID userId, UpdateUserDto updateUserDto) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));

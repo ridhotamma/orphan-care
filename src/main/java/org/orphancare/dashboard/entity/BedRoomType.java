@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,11 +21,14 @@ public class BedRoomType {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String Name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String Type;
+
+    @OneToMany(mappedBy = "bedRoomType", cascade = CascadeType.ALL)
+    private Set<BedRoom> bedRooms;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

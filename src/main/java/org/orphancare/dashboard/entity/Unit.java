@@ -5,17 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "donations")
+@Table(name = "units")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Donation {
+public class Unit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,24 +24,7 @@ public class Donation {
     private String name;
 
     @Column(nullable = false)
-    private BigDecimal amount;
-
-    @Column(nullable = false)
-    private LocalDate receivedDate;
-
-    @Column(nullable = false)
-    private String receiver;
-
-    @Column(nullable = false)
-    private String donatorName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "donation_type_id", nullable = false)
-    private DonationType donationType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    private String type;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
