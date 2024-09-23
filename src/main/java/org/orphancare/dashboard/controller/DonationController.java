@@ -3,7 +3,11 @@ package org.orphancare.dashboard.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DonationDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.DonationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +24,15 @@ public class DonationController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<DonationDto>> getDonations() {
-        List<DonationDto> donations = donationService.getAllDonations();
+    public ResponseEntity<PaginatedResponse<Page<DonationDto>>> getDonations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "receivedDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        PaginatedResponse<Page<DonationDto>> donations = donationService.getAllDonations(pageRequest, search);
         return ResponseEntity.ok(donations);
     }
 

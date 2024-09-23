@@ -3,6 +3,7 @@ package org.orphancare.dashboard.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DonationDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Donation;
 import org.orphancare.dashboard.entity.DonationType;
 import org.orphancare.dashboard.entity.Unit;
@@ -11,6 +12,9 @@ import org.orphancare.dashboard.mapper.DonationMapper;
 import org.orphancare.dashboard.repository.DonationRepository;
 import org.orphancare.dashboard.repository.DonationTypeRepository;
 import org.orphancare.dashboard.repository.UnitRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,13 +31,29 @@ public class DonationService {
     private final UnitRepository unitRepository;
     private final DonationMapper donationMapper;
 
-    public List<DonationDto> getAllDonations() {
-        return donationRepository.findAll()
-                .stream()
-                .map(donationMapper::toDto)
-                .collect(Collectors.toList());
-    }
+    public PaginatedResponse<Page<DonationDto>> getAllDonations(Pageable pageable, String search) {
+        Specification<Donation> spec = (root, query, cb) -> {
+            if (search != null && !search.isEmpty()) {
+                return cb.or(
+                        cb.like(cb.lower(root.get("name")), "%" + search.toLowerCase() + "%"),
+                        cb.like(cb.lower(root.get("donatorName")), "%" + search.toLowerCase() + "%")
+                );
+            }
+            return null;
+        };
 
+        Page<Donation> donations = donationRepository.findAll(spec, pageable);
+        Page<DonationDto> donationDtos = donations.map(donationMapper::toDto);
+
+        PaginatedResponse.Meta meta = new PaginatedResponse.Meta(
+                donationDtos.getNumber() + 1,
+                donationDtos.getSize(),
+                donationDtos.getTotalElements(),
+                donationDtos.getTotalPages()
+        );
+
+        return new PaginatedResponse<>(donationDtos, meta);
+    }
     public DonationDto getDonationById(UUID id) {
         Donation donation = donationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation not found"));
