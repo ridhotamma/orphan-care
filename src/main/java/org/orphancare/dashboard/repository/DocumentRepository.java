@@ -1,7 +1,6 @@
 package org.orphancare.dashboard.repository;
 
 import org.orphancare.dashboard.entity.Document;
-import org.orphancare.dashboard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
