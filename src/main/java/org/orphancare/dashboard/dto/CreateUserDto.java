@@ -63,7 +63,6 @@ public class CreateUserDto {
     @NotNull
     private UUID bedRoomId;
 
-    @NotNull
     @Valid
     private GuardianDto guardian;
 }
