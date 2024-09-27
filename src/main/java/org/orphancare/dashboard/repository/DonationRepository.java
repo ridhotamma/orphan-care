@@ -44,16 +44,17 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
             nativeQuery = true)
     List<Map<String, Object>> findTop5DonorsWithTypeAndUnit();
 
-    @Query(value = "SELECT dt.name as \"donationName\", " +
-            "CONCAT(TO_CHAR(TRUNC(SUM(d.amount)), 'FM999,999,999'), ' ', u.name) as amount, " +
-            "TO_CHAR(d.received_date, 'YYYY-MM') as month " +
-            "FROM donations d " +
-            "JOIN donation_types dt ON dt.id = d.donation_type_id " +
-            "JOIN units u ON u.id = d.unit_id " +
-            "WHERE d.received_date BETWEEN :startDate AND :endDate " +
-            "GROUP BY dt.name, u.name, TO_CHAR(d.received_date, 'YYYY-MM') " +
-            "ORDER BY dt.name, TO_CHAR(d.received_date, 'YYYY-MM')",
-            nativeQuery = true)
+    @Query(value = """
+            SELECT
+                TRIM(TO_CHAR(d.received_date, 'Month')) as "month",
+                dt.name as "donationTypeName",
+                COUNT(d.id) as "totalDistribution"
+            FROM donations d
+            JOIN donation_types dt ON dt.id = d.donation_type_id
+            WHERE d.received_date BETWEEN :startDate AND :endDate
+            GROUP BY TRIM(TO_CHAR(d.received_date, 'Month')), dt.name
+            ORDER BY MIN(d.received_date)
+""", nativeQuery = true)
     List<Map<String, Object>> getDonationTrendsByMonthWithTypeAndUnit(LocalDate startDate, LocalDate endDate);
 
     @Query(value = "SELECT d.id, d.donator_name as \"donatorName\", dt.name as \"donationType\", " +
