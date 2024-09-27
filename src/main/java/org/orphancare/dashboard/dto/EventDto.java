@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@DateRange(startDate = "startDate", endDate = "endDate", message = "End date must be after start date")
+@DateRange(startDate = "startDate", endDate = "endDate")
 public class EventDto {
     private UUID id;
 
