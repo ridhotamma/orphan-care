@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.repository.*;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,63 +41,20 @@ public class AnalyticService {
         LocalDate startDate = endDate.minusMonths(5).withDayOfMonth(1);
 
         List<Map<String, Object>> donationTrends = donationRepository.getDonationTrendsByMonthWithTypeAndUnit(startDate, endDate);
-        List<Map<String, Object>> formattedTrends = formatDonationTrends(donationTrends);
-        dashboard.put("donationTrends", formattedTrends);
+        dashboard.put("donationTrends", donationTrends);
 
         List<Map<String, Object>> donationTypeDistribution = donationRepository.getDonationTypeDistribution();
         dashboard.put("donationTypeDistribution", donationTypeDistribution);
 
         List<Map<String, Object>> totalDonationAmount = donationRepository.getTotalDonationAmountByType();
-        List<Map<String, Object>> formattedTotalDonationAmount = formatTotalDonationAmount(totalDonationAmount);
-        dashboard.put("totalDonationAmount", formattedTotalDonationAmount);
+        dashboard.put("totalDonationAmount", totalDonationAmount);
 
         List<Map<String, Object>> topDonors = donationRepository.findTop5DonorsWithTypeAndUnit();
         dashboard.put("topDonors", topDonors);
 
+        List<Map<String, Object>> latest10Donations = donationRepository.findLatest10Donations();
+        dashboard.put("latestDonations", latest10Donations);
+
         return dashboard;
-    }
-
-    private List<Map<String, Object>> formatDonationTrends(List<Map<String, Object>> donationTrends) {
-        DecimalFormat df = new DecimalFormat("#,##0.##");
-
-        return donationTrends.stream()
-                .collect(Collectors.groupingBy(
-                        trend -> trend.get("donationName"),
-                        Collectors.mapping(trend -> {
-                            Map<String, Object> detail = new HashMap<>();
-                            String[] amountParts = ((String) trend.get("amount")).split(" ", 2);
-                            Double amount = Double.parseDouble(amountParts[0]);
-                            String unit = amountParts.length > 1 ? amountParts[1] : "";
-
-                            detail.put("amount", df.format(amount) + " " + unit);
-                            detail.put("month", trend.get("month"));
-                            return detail;
-                        }, Collectors.toList())
-                ))
-                .entrySet().stream()
-                .map(entry -> {
-                    Map<String, Object> formattedTrend = new HashMap<>();
-                    formattedTrend.put("donationName", entry.getKey());
-                    formattedTrend.put("details", entry.getValue());
-                    return formattedTrend;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<Map<String, Object>> formatTotalDonationAmount(List<Map<String, Object>> totalDonationAmount) {
-        DecimalFormat df = new DecimalFormat("#,##0.##");
-        return totalDonationAmount.stream()
-                .map(donation -> {
-                    Map<String, Object> formattedDonation = new HashMap<>();
-                    formattedDonation.put("name", donation.get("name"));
-
-                    Double amount = ((Number) donation.get("amount")).doubleValue();
-                    String unit = (String) donation.get("unit");
-                    String formattedAmount = df.format(amount) + " " + unit;
-
-                    formattedDonation.put("amount", formattedAmount);
-                    return formattedDonation;
-                })
-                .collect(Collectors.toList());
     }
 }

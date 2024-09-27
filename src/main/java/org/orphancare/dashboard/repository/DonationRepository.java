@@ -24,8 +24,7 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
     List<Map<String, Object>> getDonationTypeDistribution();
 
     @Query(value = "SELECT dt.name as \"name\", " +
-            "SUM(d.amount) as amount, " +
-            "u.name as unit " +
+            "CONCAT(TO_CHAR(TRUNC(SUM(d.amount)), 'FM999,999,999'), ' ', u.name) as amount " +
             "FROM donation_types dt " +
             "LEFT JOIN donations d ON dt.id = d.donation_type_id " +
             "LEFT JOIN units u ON u.id = d.unit_id " +
@@ -34,7 +33,7 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
     List<Map<String, Object>> getTotalDonationAmountByType();
 
     @Query(value = "SELECT dt.name as \"donationName\", " +
-            "CONCAT(CAST(SUM(d.amount) AS VARCHAR), ' ', u.name) as amount, " +
+            "CONCAT(TO_CHAR(TRUNC(SUM(d.amount)), 'FM999,999,999'), ' ', u.name) as amount, " +
             "d.donator_name as donator " +
             "FROM donations d " +
             "JOIN donation_types dt ON dt.id = d.donation_type_id " +
@@ -46,7 +45,7 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
     List<Map<String, Object>> findTop5DonorsWithTypeAndUnit();
 
     @Query(value = "SELECT dt.name as \"donationName\", " +
-            "CONCAT(CAST(SUM(d.amount) AS VARCHAR), ' ', u.name) as amount, " +
+            "CONCAT(TO_CHAR(TRUNC(SUM(d.amount)), 'FM999,999,999'), ' ', u.name) as amount, " +
             "TO_CHAR(d.received_date, 'YYYY-MM') as month " +
             "FROM donations d " +
             "JOIN donation_types dt ON dt.id = d.donation_type_id " +
@@ -56,4 +55,15 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
             "ORDER BY dt.name, TO_CHAR(d.received_date, 'YYYY-MM')",
             nativeQuery = true)
     List<Map<String, Object>> getDonationTrendsByMonthWithTypeAndUnit(LocalDate startDate, LocalDate endDate);
+
+    @Query(value = "SELECT d.id, d.donator_name as \"donatorName\", dt.name as \"donationType\", " +
+            "CONCAT(TO_CHAR(TRUNC(d.amount), 'FM999,999,999'), ' ', u.name) as amount, " +
+            "d.received_date as \"receivedDate\" " +
+            "FROM donations d " +
+            "JOIN donation_types dt ON dt.id = d.donation_type_id " +
+            "JOIN units u ON u.id = d.unit_id " +
+            "ORDER BY d.received_date DESC " +
+            "LIMIT 10",
+            nativeQuery = true)
+    List<Map<String, Object>> findLatest10Donations();
 }
