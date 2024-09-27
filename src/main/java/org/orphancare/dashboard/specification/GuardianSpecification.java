@@ -12,16 +12,16 @@ import java.util.UUID;
 
 public class GuardianSpecification {
 
-    public static Specification<Guardian> searchGuardians(String fullName, String email, UUID guardianTypeId) {
+    public static Specification<Guardian> searchGuardians(String search, UUID guardianTypeId) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (fullName != null && !fullName.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), "%" + fullName.toLowerCase() + "%"));
-            }
-
-            if (email != null && !email.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + email.toLowerCase() + "%"));
+            if (search != null && !search.isEmpty()) {
+                String lowercaseSearch = "%" + search.toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), lowercaseSearch),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), lowercaseSearch)
+                ));
             }
 
             if (guardianTypeId != null) {

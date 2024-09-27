@@ -8,10 +8,12 @@ import org.orphancare.dashboard.entity.Event;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.EventMapper;
 import org.orphancare.dashboard.repository.EventRepository;
+import org.orphancare.dashboard.specification.EventSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +32,8 @@ public class EventService {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
 
-        Page<Event> eventsPage = eventRepository.findBySearchCriteriaAndStatus(search, status, pageable);
+        Specification<Event> spec = EventSpecification.searchEvents(search, status);
+        Page<Event> eventsPage = eventRepository.findAll(spec, pageable);
 
         List<EventDto> eventDtos = eventsPage.getContent()
                 .stream()

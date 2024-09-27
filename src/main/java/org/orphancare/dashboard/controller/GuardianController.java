@@ -46,14 +46,13 @@ public class GuardianController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<PaginatedResponse<List<GuardianDto.Response>>> getAllGuardians(
-            @RequestParam(required = false) String fullName,
-            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID guardianTypeId,
             @RequestParam(defaultValue = "fullName") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortOrder,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage) {
-        PaginatedResponse<List<GuardianDto.Response>> guardians = guardianService.getAllGuardians(fullName, email, guardianTypeId, sortBy, sortOrder, page, perPage);
+        PaginatedResponse<List<GuardianDto.Response>> guardians = guardianService.getAllGuardians(search, guardianTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(guardians);
     }
 }

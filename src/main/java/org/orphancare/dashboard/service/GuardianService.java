@@ -69,11 +69,11 @@ public class GuardianService {
         return guardianMapper.toResponseDto(guardian);
     }
 
-    public PaginatedResponse<List<GuardianDto.Response>> getAllGuardians(String fullName, String email, UUID guardianTypeId, String sortBy, String sortOrder, int page, int perPage) {
+    public PaginatedResponse<List<GuardianDto.Response>> getAllGuardians(String search, UUID guardianTypeId, String sortBy, String sortOrder, int page, int perPage) {
         Sort.Direction direction = Sort.Direction.fromString(sortOrder);
         Pageable pageable = PageRequest.of(page, perPage, Sort.by(direction, sortBy));
 
-        Specification<Guardian> spec = GuardianSpecification.searchGuardians(fullName, email, guardianTypeId);
+        Specification<Guardian> spec = GuardianSpecification.searchGuardians(search, guardianTypeId);
         Page<Guardian> guardianPage = guardianRepository.findAll(spec, pageable);
 
         List<GuardianDto.Response> guardianDtos = guardianPage.getContent().stream()
