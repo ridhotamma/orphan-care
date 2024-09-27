@@ -33,5 +33,7 @@ public interface UserMapper {
     @Mapping(source = "createUserDto.bio", target = "bio")
     @Mapping(source = "createUserDto.phoneNumber", target = "phoneNumber")
     @Mapping(source = "createUserDto.gender", target = "gender")
+    @Mapping(source = "createUserDto.careTaker", target = "careTaker")
+    @Mapping(source = "createUserDto.alumni", target = "alumni")
     Profile toProfileEntity(CreateUserDto createUserDto);
 }

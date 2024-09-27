@@ -65,4 +65,10 @@ public class CreateUserDto {
 
     @Valid
     private GuardianDto guardian;
+
+    @NotNull
+    private boolean isCareTaker = false;
+
+    @NotNull
+    private boolean isAlumni = false;
 }

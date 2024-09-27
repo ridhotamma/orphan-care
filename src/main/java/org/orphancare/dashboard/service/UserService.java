@@ -51,6 +51,7 @@ public class UserService {
 
         User user = userMapper.toEntity(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+        user.setActive(createUserDto.isActive());
 
         Address address = addressMapper.toEntity(createUserDto.getAddress());
         Profile profile = userMapper.toProfileEntity(createUserDto);
@@ -60,6 +61,8 @@ public class UserService {
         profile.setBedRoom(bedRoom);
         profile.setAddress(address);
         profile.setGuardian(guardian);
+        profile.setCareTaker(createUserDto.isCareTaker());
+        profile.setAlumni(createUserDto.isAlumni());
 
         user.setProfile(profile);
 
