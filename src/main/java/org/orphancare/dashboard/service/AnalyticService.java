@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class AnalyticService {
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusMonths(5).withDayOfMonth(1);
 
-        List<Map<String, Object>> donationTrends = donationRepository.getDonationTrendsByMonthWithTypeAndUnit(startDate, endDate);
+        List<Map<String, Object>> donationTrends = this.getDonationTrendsByMonthFormatted(startDate, endDate);
         dashboard.put("donationTrends", donationTrends);
 
         List<Map<String, Object>> donationTypeDistribution = donationRepository.getDonationTypeDistribution();
@@ -87,6 +88,9 @@ public class AnalyticService {
         long previousYearFemaleCount = profileRepository.countByGenderAndJoinDateBetween(Gender.FEMALE, previousYearStart, previousYearEnd);
         String femaleDifference = calculatePercentageDifference(previousYearFemaleCount, currentYearFemaleCount);
 
+        long adminCount = userRepository.countUsersByRoleAdmin();
+        long userCount = userRepository.countUsersByRoleUser();
+
         // Create profile mapping
         Map<String, Object> profileMapping = new HashMap<>();
 
@@ -95,6 +99,8 @@ public class AnalyticService {
         profileMapping.put("currentYearMaleCount", currentYearMaleCount);
         profileMapping.put("previousYearMaleCount", previousYearMaleCount);
         profileMapping.put("maleDifference", maleDifference);
+        profileMapping.put("adminCount", adminCount);
+        profileMapping.put("userCount", userCount);
 
         // Female data
         profileMapping.put("femaleCount", totalFemaleCount);
@@ -139,5 +145,39 @@ public class AnalyticService {
         }
         double percentageDifference = ((double) (currentCount - previousCount) / previousCount) * 100;
         return String.format("%.2f%%", percentageDifference);
+    }
+
+    public List<Map<String, Object>> getDonationTrendsByMonthFormatted(LocalDate startDate, LocalDate endDate) {
+        List<Map<String, Object>> rawData = donationRepository.getDonationTrendsByMonthWithTypeAndUnit(startDate, endDate);
+        Map<String, Map<String, Object>> formattedData = new LinkedHashMap<>();
+        Set<String> allDonationTypes = new HashSet<>();
+
+        // First pass: collect all donation types and initialize data structure
+        for (Map<String, Object> row : rawData) {
+            String month = (String) row.get("month");
+            String donationType = ((String) row.get("donationTypeName")).toLowerCase();
+            Long totalDistribution = ((Number) row.get("totalDistribution")).longValue();
+
+            allDonationTypes.add(donationType);
+            formattedData.putIfAbsent(month, new HashMap<>());
+            formattedData.get(month).put(donationType, totalDistribution);
+        }
+
+        // Second pass: ensure all months have all donation types
+        for (Map<String, Object> monthData : formattedData.values()) {
+            for (String donationType : allDonationTypes) {
+                monthData.putIfAbsent(donationType, 0L);
+            }
+        }
+
+        // Convert to list and add month key
+        return formattedData.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> monthData = new HashMap<>();
+                    monthData.put("month", entry.getKey());
+                    monthData.putAll(entry.getValue());
+                    return monthData;
+                })
+                .collect(Collectors.toList());
     }
 }
