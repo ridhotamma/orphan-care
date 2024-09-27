@@ -15,6 +15,7 @@ import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,8 +122,12 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(String search, Gender gender, String roles, int page, int perPage) {
-        Pageable pageable = PageRequest.of(page, perPage);
+    public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(
+            String search, Gender gender, String roles, Boolean isAlumni, Boolean isCareTaker, Boolean active,
+            String sortBy, String sortDirection, int page, int perPage) {
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
 
         List<RoleType> defaultRoleList = Arrays.asList(RoleType.ROLE_USER, RoleType.ROLE_ADMIN);
 
@@ -130,7 +135,9 @@ public class UserService {
                 .map(String::trim)
                 .map(RoleType::valueOf)
                 .collect(Collectors.toList());
-        Page<User> userPage = userRepository.findBySearchGenderAndRoles(search, gender, roleList, pageable);
+
+        Page<User> userPage = userRepository.findBySearchCriteriaAndRoles(
+                search, gender, roleList, isAlumni, isCareTaker, active, pageable);
 
         List<UserDto.UserWithProfileDto> userDtos = userPage.getContent().stream()
                 .map(userMapper::toUserWithProfileDto)

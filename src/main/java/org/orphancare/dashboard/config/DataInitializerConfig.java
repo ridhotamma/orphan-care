@@ -30,6 +30,8 @@ public class DataInitializerConfig implements CommandLineRunner {
         String username = "adminpsaa";
         String profilePicture = "https://images.alphacoders.com/475/475526.jpg";
         boolean active = true;
+        boolean isCareTaker = true;
+        boolean isAlumni = true;
 
         Set<RoleType> roles = new HashSet<>();
         roles.add(RoleType.ROLE_ADMIN);
@@ -50,7 +52,8 @@ public class DataInitializerConfig implements CommandLineRunner {
             profile.setGender(Gender.MALE);
             profile.setUser(user);
             profile.setProfilePicture(profilePicture);
-
+            profile.setAlumni(isAlumni);
+            profile.setCareTaker(isCareTaker);
             user.setProfile(profile);
 
             try {

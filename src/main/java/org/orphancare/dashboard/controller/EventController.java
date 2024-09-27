@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.EventDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
+import org.orphancare.dashboard.entity.Event;
 import org.orphancare.dashboard.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,11 +23,14 @@ public class EventController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PaginatedResponse<List<EventDto>>> getEvents(
-            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Event.EventStatus status,
+            @RequestParam(defaultValue = "startDate") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage
     ) {
-        PaginatedResponse<List<EventDto>> events = eventService.getAllEvents(name, page, perPage);
+        PaginatedResponse<List<EventDto>> events = eventService.getAllEvents(search, status, sortBy, sortDirection, page, perPage);
         return ResponseEntity.ok(events);
     }
 

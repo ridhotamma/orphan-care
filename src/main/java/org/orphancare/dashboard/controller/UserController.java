@@ -54,9 +54,15 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(required = false) Gender gender,
             @RequestParam(required = false) String roles,
+            @RequestParam(required = false) Boolean isAlumni,
+            @RequestParam(required = false) Boolean isCareTaker,
+            @RequestParam(required = false) Boolean active,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int perPage) {
-        PaginatedResponse<List<UserDto.UserWithProfileDto>> users = userService.getAllUsers(search, gender, roles, page, perPage);
+        PaginatedResponse<List<UserDto.UserWithProfileDto>> users = userService.getAllUsers(
+                search, gender, roles, isAlumni, isCareTaker, active, sortBy, sortDirection, page, perPage);
         return ResponseEntity.ok(users);
     }
 

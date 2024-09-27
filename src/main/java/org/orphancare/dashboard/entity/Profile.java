@@ -64,6 +64,12 @@ public class Profile {
     @JoinColumn(name = "guardian_id")
     private Guardian guardian;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isCareTaker = false;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isAlumni = false;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

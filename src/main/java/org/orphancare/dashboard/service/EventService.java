@@ -11,6 +11,7 @@ import org.orphancare.dashboard.repository.EventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,11 +26,11 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
 
-    public PaginatedResponse<List<EventDto>> getAllEvents(String name, int page, int perPage) {
-        Pageable pageable = PageRequest.of(page, perPage);
-        Page<Event> eventsPage = (name == null || name.isEmpty()) ?
-                eventRepository.findAll(pageable) :
-                eventRepository.findByNameContainingIgnoreCase(name, pageable);
+    public PaginatedResponse<List<EventDto>> getAllEvents(String search, Event.EventStatus status, String sortBy, String sortDirection, int page, int perPage) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
+
+        Page<Event> eventsPage = eventRepository.findBySearchCriteriaAndStatus(search, status, pageable);
 
         List<EventDto> eventDtos = eventsPage.getContent()
                 .stream()
