@@ -2,6 +2,7 @@ package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DocumentDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Document;
 import org.orphancare.dashboard.entity.DocumentType;
 import org.orphancare.dashboard.entity.User;
@@ -10,7 +11,13 @@ import org.orphancare.dashboard.mapper.DocumentMapper;
 import org.orphancare.dashboard.repository.DocumentRepository;
 import org.orphancare.dashboard.repository.DocumentTypeRepository;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.specification.DocumentSpecification;
 import org.orphancare.dashboard.util.RequestUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,23 +77,36 @@ public class DocumentService {
         return documentMapper.toResponseDto(document);
     }
 
-    public List<DocumentDto.Response> getAllDocumentsByUserId(UUID userId) {
-        List<Document> documents = documentRepository.findByOwnerId(userId);
-        return documents.stream()
-                .sorted(Comparator.comparing(Document::getCreatedAt).reversed())
+    public PaginatedResponse<List<DocumentDto.Response>> getAllDocumentsByUserId(UUID userId, String name, UUID documentTypeId, String sortBy, String sortOrder, int page, int perPage) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
+
+        Specification<Document> spec = Specification.where(DocumentSpecification.ownerIdEquals(userId))
+                .and(DocumentSpecification.nameContains(name))
+                .and(DocumentSpecification.documentTypeIdEquals(documentTypeId));
+
+        Page<Document> documentsPage = documentRepository.findAll(spec, pageable);
+
+        List<DocumentDto.Response> documentDtos = documentsPage.getContent().stream()
                 .map(documentMapper::toResponseDto)
                 .collect(Collectors.toList());
+
+        PaginatedResponse.Meta meta = new PaginatedResponse.Meta(
+                documentsPage.getNumber(),
+                documentsPage.getSize(),
+                documentsPage.getTotalElements(),
+                documentsPage.getTotalPages()
+        );
+
+        return new PaginatedResponse<>(documentDtos, meta);
     }
 
-    public List<DocumentDto.Response> getCurrentUserDocuments() {
+    public PaginatedResponse<List<DocumentDto.Response>> getCurrentUserDocuments(String name, UUID documentTypeId, String sortBy, String sortOrder, int page, int perPage) {
         String currentUsername = requestUtil.getCurrentUsername();
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists with username " + currentUsername));
-        List<Document> documents = documentRepository.findByOwnerId(user.getId());
-        return documents.stream()
-                .sorted(Comparator.comparing(Document::getCreatedAt).reversed())
-                .map(documentMapper::toResponseDto)
-                .collect(Collectors.toList());
+
+        return getAllDocumentsByUserId(user.getId(), name, documentTypeId, sortBy, sortOrder, page, perPage);
     }
 
     public List<DocumentDto.GroupByDateRange> getDocumentsGroupedByDate(UUID userId) {

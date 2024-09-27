@@ -23,9 +23,12 @@ public class InventoryController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<PaginatedResponse<List<InventoryDto>>> getAllInventories(
             @RequestParam(required = false) String name,
+            @RequestParam(required = false) UUID inventoryTypeId,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortOrder,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage) {
-        PaginatedResponse<List<InventoryDto>> inventories = inventoryService.getAllInventories(name, page, perPage);
+        PaginatedResponse<List<InventoryDto>> inventories = inventoryService.getAllInventories(name, inventoryTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(inventories);
     }
 

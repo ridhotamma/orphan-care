@@ -10,9 +10,12 @@ import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.BedRoomMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.BedRoomTypeRepository;
+import org.orphancare.dashboard.specification.BedRoomSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,11 +31,14 @@ public class BedRoomService {
     private final BedRoomTypeRepository bedRoomTypeRepository;
     private final BedRoomMapper bedRoomMapper;
 
-    public PaginatedResponse<List<BedRoomDto>> getAllBedrooms(String name, int page, int perPage) {
-        Pageable pageable = PageRequest.of(page, perPage);
-        Page<BedRoom> bedRoomsPage = (name == null || name.isEmpty()) ?
-                bedRoomRepository.findAll(pageable) :
-                bedRoomRepository.findByNameContainingIgnoreCase(name, pageable);
+    public PaginatedResponse<List<BedRoomDto>> getAllBedrooms(String name, UUID bedRoomTypeId, String sortBy, String sortOrder, int page, int perPage) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
+
+        Specification<BedRoom> spec = Specification.where(BedRoomSpecification.nameContains(name))
+                .and(BedRoomSpecification.bedRoomTypeIdEquals(bedRoomTypeId));
+
+        Page<BedRoom> bedRoomsPage = bedRoomRepository.findAll(spec, pageable);
 
         List<BedRoomDto> bedRoomDtos = bedRoomsPage.getContent().stream()
                 .map(bedRoomMapper::toDto)

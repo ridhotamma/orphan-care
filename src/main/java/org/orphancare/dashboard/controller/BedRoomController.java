@@ -23,9 +23,12 @@ public class BedRoomController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PaginatedResponse<List<BedRoomDto>>> getAllBedRooms(
             @RequestParam(required = false) String name,
+            @RequestParam(required = false) UUID bedRoomTypeId,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortOrder,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage) {
-        PaginatedResponse<List<BedRoomDto>> bedRooms = bedRoomService.getAllBedrooms(name, page, perPage);
+        PaginatedResponse<List<BedRoomDto>> bedRooms = bedRoomService.getAllBedrooms(name, bedRoomTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(bedRooms);
     }
 

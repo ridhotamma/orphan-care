@@ -3,6 +3,7 @@ package org.orphancare.dashboard.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DocumentDto;
+import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.DocumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,8 +56,15 @@ public class DocumentController {
 
     @GetMapping("/{userId}/documents")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<DocumentDto.Response>> getAllDocumentsByUserId(@PathVariable UUID userId) {
-        List<DocumentDto.Response> documents = documentService.getAllDocumentsByUserId(userId);
+    public ResponseEntity<PaginatedResponse<List<DocumentDto.Response>>> getAllDocumentsByUserId(
+            @PathVariable UUID userId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) UUID documentTypeId,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortOrder,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        PaginatedResponse<List<DocumentDto.Response>> documents = documentService.getAllDocumentsByUserId(userId, name, documentTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(documents);
     }
 
@@ -69,8 +77,14 @@ public class DocumentController {
 
     @GetMapping("/documents")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<DocumentDto.Response>> getCurrentUserDocuments() {
-        List<DocumentDto.Response> documents = documentService.getCurrentUserDocuments();
+    public ResponseEntity<PaginatedResponse<List<DocumentDto.Response>>> getCurrentUserDocuments(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) UUID documentTypeId,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortOrder,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        PaginatedResponse<List<DocumentDto.Response>> documents = documentService.getCurrentUserDocuments(name, documentTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(documents);
     }
 }
