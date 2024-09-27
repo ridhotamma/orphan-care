@@ -3,7 +3,6 @@ package org.orphancare.dashboard.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DonationDto;
-import org.orphancare.dashboard.dto.InventoryDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.DonationService;
 import org.springframework.http.ResponseEntity;
