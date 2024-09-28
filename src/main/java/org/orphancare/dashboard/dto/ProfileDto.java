@@ -20,11 +20,7 @@ public class ProfileDto {
     private LocalDate leaveDate;
     private String bio;
     private UUID bedRoomId;
-
-    @JsonProperty("isAlumni")
     private boolean isAlumni;
-
-    @JsonProperty("isCareTaker")
     private boolean isCareTaker;
 
     @NotBlank

@@ -11,6 +11,7 @@ import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.specification.UserSpecification;
 import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -132,15 +133,17 @@ public class UserService {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
 
-        List<RoleType> defaultRoleList = Arrays.asList(RoleType.ROLE_USER, RoleType.ROLE_ADMIN);
-
-        List<RoleType> roleList = (roles == null || roles.isEmpty()) ? defaultRoleList : Arrays.stream(roles.split(","))
+        List<RoleType> roleList = (roles == null || roles.isEmpty())
+                ? Arrays.asList(RoleType.ROLE_USER, RoleType.ROLE_ADMIN)
+                : Arrays.stream(roles.split(","))
                 .map(String::trim)
                 .map(RoleType::valueOf)
                 .collect(Collectors.toList());
 
-        Page<User> userPage = userRepository.findBySearchCriteriaAndRoles(
-                search, gender, roleList, isAlumni, isCareTaker, active, pageable);
+        Page<User> userPage = userRepository.findAll(
+                UserSpecification.withSearchCriteriaAndRoles(search, gender, roleList, isAlumni, isCareTaker, active),
+                pageable
+        );
 
         List<UserDto.UserWithProfileDto> userDtos = userPage.getContent().stream()
                 .map(userMapper::toUserWithProfileDto)
