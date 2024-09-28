@@ -19,7 +19,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PutMapping("/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProfileDto> createOrUpdateProfile(
             @PathVariable UUID userId,
             @Valid @RequestBody ProfileDto profileDto) {
@@ -28,14 +28,14 @@ public class ProfileController {
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable UUID userId) {
         ProfileDto profileDto = profileService.getProfileByUserId(userId);
         return ResponseEntity.ok(profileDto);
     }
 
     @GetMapping("/current-user")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<UserDto.UserWithProfileDto> getCurrentUser() {
         UserDto.UserWithProfileDto updatedUser = profileService.getCurrentUserWithProfile();
         return ResponseEntity.ok(updatedUser);

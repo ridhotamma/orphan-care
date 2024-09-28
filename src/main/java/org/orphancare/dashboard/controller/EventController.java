@@ -21,7 +21,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginatedResponse<List<EventDto>>> getEvents(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Event.EventStatus status,
@@ -35,28 +35,28 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventDto> getEventById(@PathVariable UUID id) {
         EventDto event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventDto> createEvent(@RequestBody @Valid EventDto eventDto) {
         EventDto createdEvent = eventService.createEvent(eventDto);
         return ResponseEntity.status(201).body(createdEvent);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EventDto> updateEvent(@PathVariable UUID id, @RequestBody @Valid EventDto eventDto) {
         EventDto updatedEvent = eventService.updateEvent(id, eventDto);
         return ResponseEntity.ok(updatedEvent);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
         eventService.deleteEventById(id);
         return ResponseEntity.noContent().build();

@@ -18,13 +18,13 @@ public class AnalyticController {
     private final AnalyticService analyticService;
 
     @GetMapping("/homepage")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> getHomePageAnalytics() {
         return ResponseEntity.ok(analyticService.getHomePageAnalytic());
     }
 
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> getDashboardAnalytics() {
         return ResponseEntity.ok(analyticService.getDashboardAnalytics());
     }

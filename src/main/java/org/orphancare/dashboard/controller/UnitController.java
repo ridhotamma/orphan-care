@@ -19,35 +19,35 @@ public class UnitController {
     private final UnitService unitService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UnitDto>> getUnits() {
         List<UnitDto> units = unitService.getAllUnits();
         return ResponseEntity.ok(units);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UnitDto> getUnitById(@PathVariable UUID id) {
         UnitDto unit = unitService.getUnitById(id);
         return ResponseEntity.ok(unit);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UnitDto> createUnit(@RequestBody @Valid UnitDto unitDto) {
         UnitDto createdUnit = unitService.createUnit(unitDto);
         return ResponseEntity.status(201).body(createdUnit);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UnitDto> updateUnit(@PathVariable UUID id, @RequestBody @Valid UnitDto unitDto) {
         UnitDto updatedUnit = unitService.updateUnit(id, unitDto);
         return ResponseEntity.ok(updatedUnit);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUnit(@PathVariable UUID id) {
         unitService.deleteUnitById(id);
         return ResponseEntity.noContent().build();

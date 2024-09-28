@@ -21,7 +21,7 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @PostMapping("/{userId}/documents")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DocumentDto.Response> createDocument(
             @PathVariable UUID userId,
             @Valid @RequestBody DocumentDto documentDto) {
@@ -30,7 +30,7 @@ public class DocumentController {
     }
 
     @PutMapping("/{userId}/documents/{documentId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DocumentDto> updateDocument(
             @PathVariable UUID userId,
             @PathVariable UUID documentId,
@@ -41,21 +41,21 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{userId}/documents/{documentId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> deleteDocument(@PathVariable UUID userId, @PathVariable UUID documentId) {
         documentService.deleteDocument(documentId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}/documents/{documentId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DocumentDto.Response> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
         DocumentDto.Response document = documentService.getDocumentById(documentId);
         return ResponseEntity.ok(document);
     }
 
     @GetMapping("/{userId}/documents")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PaginatedResponse<List<DocumentDto.Response>>> getAllDocumentsByUserId(
             @PathVariable UUID userId,
             @RequestParam(required = false) String name,
@@ -69,14 +69,14 @@ public class DocumentController {
     }
 
     @GetMapping("/{userId}/documents-range")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<DocumentDto.GroupByDateRange>> getDocumentsGroupedByDate(@PathVariable UUID userId) {
         List<DocumentDto.GroupByDateRange> groupedDocuments = documentService.getDocumentsGroupedByDate(userId);
         return ResponseEntity.ok(groupedDocuments);
     }
 
     @GetMapping("/documents")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PaginatedResponse<List<DocumentDto.Response>>> getCurrentUserDocuments(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) UUID documentTypeId,

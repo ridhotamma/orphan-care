@@ -20,31 +20,31 @@ public class GuardianController {
     private final GuardianService guardianService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public GuardianDto.Response createGuardian(@Valid @RequestBody GuardianDto guardianDto) {
         return guardianService.createGuardian(guardianDto);
     }
 
     @PutMapping("/{guardianId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public GuardianDto.Response updateGuardian(@PathVariable UUID guardianId, @Valid @RequestBody GuardianDto guardianDto) {
         return guardianService.updateGuardian(guardianId, guardianDto);
     }
 
     @DeleteMapping("/{guardianId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteGuardian(@PathVariable UUID guardianId) {
         guardianService.deleteGuardian(guardianId);
     }
 
     @GetMapping("/{guardianId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public GuardianDto.Response getGuardianById(@PathVariable UUID guardianId) {
         return guardianService.getGuardianById(guardianId);
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PaginatedResponse<List<GuardianDto.Response>>> getAllGuardians(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UUID guardianTypeId,

@@ -20,7 +20,7 @@ public class BedRoomController {
     private final BedRoomService bedRoomService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginatedResponse<List<BedRoomDto>>> getAllBedRooms(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) UUID bedRoomTypeId,
@@ -33,28 +33,28 @@ public class BedRoomController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BedRoomDto> getBedRoomById(@PathVariable UUID id) {
         BedRoomDto bedRoom = bedRoomService.getBedRoomById(id);
         return ResponseEntity.ok(bedRoom);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BedRoomDto> createBedRoom(@RequestBody @Valid BedRoomDto bedRoomDto) {
         BedRoomDto createdBedRoom = bedRoomService.createBedRoom(bedRoomDto);
         return ResponseEntity.status(201).body(createdBedRoom);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BedRoomDto> updateBedRoom(@PathVariable UUID id, @RequestBody @Valid BedRoomDto bedRoomDto) {
         BedRoomDto updatedBedRoom = bedRoomService.updateBedRoom(id, bedRoomDto);
         return ResponseEntity.ok(updatedBedRoom);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBedRoom(@PathVariable UUID id) {
         bedRoomService.deleteBedRoom(id);
         return ResponseEntity.noContent().build();

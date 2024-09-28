@@ -20,7 +20,7 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PaginatedResponse<List<InventoryDto>>> getAllInventories(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) UUID inventoryTypeId,
@@ -33,28 +33,28 @@ public class InventoryController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<InventoryDto> getInventoryById(@PathVariable UUID id) {
         InventoryDto inventory = inventoryService.getInventoryById(id);
         return ResponseEntity.ok(inventory);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> createInventory(@RequestBody @Valid InventoryDto inventoryDto) {
         InventoryDto createdInventory = inventoryService.createInventory(inventoryDto);
         return ResponseEntity.status(201).body(createdInventory);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InventoryDto> updateInventory(@PathVariable UUID id, @RequestBody @Valid InventoryDto inventoryDto) {
         InventoryDto updatedInventory = inventoryService.updateInventory(id, inventoryDto);
         return ResponseEntity.ok(updatedInventory);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteInventory(@PathVariable UUID id) {
         inventoryService.deleteInventory(id);
         return ResponseEntity.noContent().build();

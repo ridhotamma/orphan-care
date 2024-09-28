@@ -20,7 +20,7 @@ public class DonationController {
     private final DonationService donationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginatedResponse<List<DonationDto>>> getDonations(
         @RequestParam(required = false) String name,
         @RequestParam(defaultValue = "0") int page,
@@ -31,28 +31,28 @@ public class DonationController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DonationDto> getDonationById(@PathVariable UUID id) {
         DonationDto donation = donationService.getDonationById(id);
         return ResponseEntity.ok(donation);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DonationDto> createDonation(@RequestBody @Valid DonationDto donationDto) {
         DonationDto createdDonation = donationService.createDonation(donationDto);
         return ResponseEntity.status(201).body(createdDonation);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DonationDto> updateDonation(@PathVariable UUID id, @RequestBody @Valid DonationDto donationDto) {
         DonationDto updatedDonation = donationService.updateDonation(id, donationDto);
         return ResponseEntity.ok(updatedDonation);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteDonation(@PathVariable UUID id) {
         donationService.deleteDonationById(id);
         return ResponseEntity.noContent().build();

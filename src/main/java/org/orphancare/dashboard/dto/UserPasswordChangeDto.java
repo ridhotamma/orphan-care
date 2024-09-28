@@ -1,6 +1,5 @@
 package org.orphancare.dashboard.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -22,7 +21,6 @@ public class UserPasswordChangeDto {
     public static class AdminChange {
 
         @NotNull
-        @NotBlank
         private UUID userId;
 
         @Size(min = 8, max = 255)

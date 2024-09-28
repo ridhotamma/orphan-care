@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.orphancare.dashboard.entity.User;
+import org.orphancare.dashboard.repository.UserRepository;
 import org.orphancare.dashboard.service.CustomUserDetailsService;
 import org.orphancare.dashboard.util.JwtUtil;
 import org.springframework.lang.NonNull;
@@ -25,6 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
@@ -52,6 +55,14 @@ public class JwtFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.validateToken(jwt, userDetails)) {
+                    // Check if the user is active
+                    User user = userRepository.findByUsername(username)
+                            .orElseThrow(() -> new AuthenticationException("User not found") {});
+
+                    if (!user.isActive()) {
+                        throw new AuthenticationException("User account is inactive") {};
+                    }
+
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken
