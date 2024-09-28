@@ -1,11 +1,11 @@
 package org.orphancare.dashboard.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.orphancare.dashboard.entity.Gender;
 import org.orphancare.dashboard.validation.ValidGender;
 
 import java.time.LocalDate;
@@ -46,6 +46,6 @@ public class ProfileDto {
     public static class ShortResponse {
         private String fullName;
         private String profilePicture;
-        private String phoneNumber;
+        private Gender gender;
     }
 }

@@ -54,6 +54,7 @@ public class BedRoomService {
         return new PaginatedResponse<>(bedRoomDtos, meta);
     }
 
+
     public BedRoomDto getBedRoomById(UUID bedRoomId) {
         BedRoom bedRoom = bedRoomRepository.findById(bedRoomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bed room not found"));
