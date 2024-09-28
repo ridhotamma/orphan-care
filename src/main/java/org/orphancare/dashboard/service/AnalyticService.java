@@ -93,6 +93,9 @@ public class AnalyticService {
 
         long careTakerCount = userRepository.countCaretakers();
         long studentCount = userRepository.countStudents();
+        long careTakerAdminCount = userRepository.countAdminCaretakers();
+        long studentAdminCount = userRepository.countAdminNonCaretakers();
+        long alumniCount = userRepository.countAlumni();
 
         // Create profile mapping
         Map<String, Object> profileMapping = new HashMap<>();
@@ -106,6 +109,9 @@ public class AnalyticService {
         profileMapping.put("userCount", userCount);
         profileMapping.put("careTakerCount", careTakerCount);
         profileMapping.put("studentCount", studentCount);
+        profileMapping.put("careTakerAdminCount", careTakerAdminCount);
+        profileMapping.put("studentAdminCount", studentAdminCount);
+        profileMapping.put("alumniCount", alumniCount);
 
         // Female data
         profileMapping.put("femaleCount", totalFemaleCount);

@@ -55,4 +55,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT COUNT(u) FROM User u JOIN u.profile p WHERE p.isCareTaker = false AND p.isAlumni = false")
     long countStudents();
+
+    @Query("SELECT COUNT(u) FROM User u JOIN u.roles r JOIN u.profile p WHERE r = 'ROLE_ADMIN' AND p.isCareTaker = true")
+    long countAdminCaretakers();
+
+    @Query("SELECT COUNT(u) FROM User u JOIN u.roles r JOIN u.profile p WHERE r = 'ROLE_ADMIN' AND p.isCareTaker = false")
+    long countAdminNonCaretakers();
+
+    @Query("SELECT COUNT(u) FROM User u JOIN u.profile p WHERE p.isAlumni = true")
+    long countAlumni();
 }
