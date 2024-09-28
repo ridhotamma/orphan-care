@@ -30,6 +30,9 @@ public class DocumentType {
     @OneToMany(mappedBy = "documentType", cascade = CascadeType.ALL)
     private Set<Document> documents;
 
+    @Column(nullable = false)
+    private boolean isMandatory = false;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

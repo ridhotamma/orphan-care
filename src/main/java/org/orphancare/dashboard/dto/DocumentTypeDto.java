@@ -18,4 +18,6 @@ public class DocumentTypeDto {
     @NotBlank
     @NotNull
     private String type;
+
+    private boolean isMandatory = false;
 }
