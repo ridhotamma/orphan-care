@@ -128,7 +128,7 @@ public class UserService {
 
     public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(
             String search, Gender gender, String roles, Boolean isAlumni, Boolean isCareTaker, Boolean active,
-            String sortBy, String sortDirection, int page, int perPage) {
+            UUID bedRoomId, String sortBy, String sortDirection, int page, int perPage) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
@@ -141,7 +141,7 @@ public class UserService {
                 .collect(Collectors.toList());
 
         Page<User> userPage = userRepository.findAll(
-                UserSpecification.withSearchCriteriaAndRoles(search, gender, roleList, isAlumni, isCareTaker, active),
+                UserSpecification.withSearchCriteriaAndRoles(search, gender, roleList, isAlumni, isCareTaker, active, bedRoomId),
                 pageable
         );
 

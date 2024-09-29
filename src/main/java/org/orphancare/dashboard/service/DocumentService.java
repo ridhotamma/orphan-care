@@ -2,12 +2,14 @@ package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DocumentDto;
+import org.orphancare.dashboard.dto.DocumentTypeDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Document;
 import org.orphancare.dashboard.entity.DocumentType;
 import org.orphancare.dashboard.entity.User;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.DocumentMapper;
+import org.orphancare.dashboard.mapper.DocumentTypeMapper;
 import org.orphancare.dashboard.repository.DocumentRepository;
 import org.orphancare.dashboard.repository.DocumentTypeRepository;
 import org.orphancare.dashboard.repository.UserRepository;
@@ -34,6 +36,7 @@ public class DocumentService {
     private final DocumentTypeRepository documentTypeRepository;
     private final UserRepository userRepository;
     private final DocumentMapper documentMapper;
+    private final DocumentTypeMapper documentTypeMapper;
     private final RequestUtil requestUtil;
 
     public DocumentDto.Response createDocument(UUID userId, DocumentDto documentDto) {
@@ -107,6 +110,19 @@ public class DocumentService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not exists with username " + currentUsername));
 
         return getAllDocumentsByUserId(user.getId(), name, documentTypeId, sortBy, sortOrder, page, perPage);
+    }
+
+    public List<DocumentTypeDto> getMissingMandatoryDocuments(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        List<DocumentType> allMandatoryTypes = documentTypeRepository.findByIsMandatoryTrue();
+        List<DocumentType> uploadedMandatoryTypes = documentRepository.findDistinctMandatoryDocumentTypesByOwner(user);
+
+        return allMandatoryTypes.stream()
+                .filter(mandatoryType -> !uploadedMandatoryTypes.contains(mandatoryType))
+                .map(documentTypeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public List<DocumentDto.GroupByDateRange> getDocumentsGroupedByDate(UUID userId) {

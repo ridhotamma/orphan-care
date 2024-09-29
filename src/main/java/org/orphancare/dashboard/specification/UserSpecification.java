@@ -6,11 +6,12 @@ import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserSpecification {
 
     public static Specification<User> withSearchCriteriaAndRoles(
-            String search, Gender gender, List<RoleType> roles, Boolean isAlumni, Boolean isCareTaker, Boolean active) {
+            String search, Gender gender, List<RoleType> roles, Boolean isAlumni, Boolean isCareTaker, Boolean active, UUID bedRoomId) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -43,6 +44,11 @@ public class UserSpecification {
 
             if (active != null) {
                 predicates.add(criteriaBuilder.equal(root.get("active"), active));
+            }
+
+            if (bedRoomId != null) {
+                Join<Profile, BedRoom> bedRoomJoin = profileJoin.join("bedRoom", JoinType.LEFT);
+                predicates.add(criteriaBuilder.equal(bedRoomJoin.get("id"), bedRoomId));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

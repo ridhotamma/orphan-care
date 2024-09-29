@@ -3,6 +3,7 @@ package org.orphancare.dashboard.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DocumentDto;
+import org.orphancare.dashboard.dto.DocumentTypeDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.DocumentService;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -86,5 +86,12 @@ public class DocumentController {
             @RequestParam(defaultValue = "10") int perPage) {
         PaginatedResponse<List<DocumentDto.Response>> documents = documentService.getCurrentUserDocuments(name, documentTypeId, sortBy, sortOrder, page, perPage);
         return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/{userId}/documents/check")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<DocumentTypeDto>> checkMissingMandatoryDocuments(@PathVariable UUID userId) {
+        List<DocumentTypeDto> missingMandatoryDocuments = documentService.getMissingMandatoryDocuments(userId);
+        return ResponseEntity.ok(missingMandatoryDocuments);
     }
 }
