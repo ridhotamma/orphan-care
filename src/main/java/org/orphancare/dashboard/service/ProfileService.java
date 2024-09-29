@@ -54,7 +54,9 @@ public class ProfileService {
         profile.setUser(user);
         profile.setAddress(addressMapper.toEntity(profileDto.getAddress()));
         profile.setBedRoom(bedRoom);
-        
+        profile.setCareTaker(profileDto.isCareTaker());
+        profile.setAlumni(profileDto.isAlumni());
+
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
     }
