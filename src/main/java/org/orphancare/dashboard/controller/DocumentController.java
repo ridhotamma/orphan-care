@@ -29,10 +29,9 @@ public class DocumentController {
         return ResponseEntity.ok(createdDocument);
     }
 
-    @PutMapping("/{userId}/documents/{documentId}")
+    @PutMapping("/documents/{documentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<DocumentDto> updateDocument(
-            @PathVariable UUID userId,
             @PathVariable UUID documentId,
             @Valid @RequestBody DocumentDto documentDto) {
         documentDto.setDocumentTypeId(documentId);
@@ -40,16 +39,16 @@ public class DocumentController {
         return ResponseEntity.ok(updatedDocument);
     }
 
-    @DeleteMapping("/{userId}/documents/{documentId}")
+    @DeleteMapping("/documents/{documentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID userId, @PathVariable UUID documentId) {
+    public ResponseEntity<Void> deleteDocument(@PathVariable UUID documentId) {
         documentService.deleteDocument(documentId);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{userId}/documents/{documentId}")
+    @GetMapping("/documents/{documentId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<DocumentDto.Response> getDocumentById(@PathVariable UUID userId, @PathVariable UUID documentId) {
+    public ResponseEntity<DocumentDto.Response> getDocumentById(@PathVariable UUID documentId) {
         DocumentDto.Response document = documentService.getDocumentById(documentId);
         return ResponseEntity.ok(document);
     }
