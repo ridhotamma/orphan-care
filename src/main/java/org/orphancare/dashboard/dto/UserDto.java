@@ -22,4 +22,13 @@ public class UserDto {
         private boolean active;
         private ProfileDto profile;
     }
+
+    @Data
+    public static class DocumentOwnerDto {
+        private UUID id;
+        private String email;
+        private String username;
+        private String profilePicture;
+        private String fullName;
+    }
 }

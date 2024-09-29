@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.orphancare.dashboard.dto.DocumentDto;
 import org.orphancare.dashboard.entity.Document;
 
-@Mapper(componentModel = "spring", uses = { DocumentTypeMapper.class })
+@Mapper(componentModel = "spring", uses = { DocumentTypeMapper.class, UserMapper.class })
 public interface DocumentMapper {
     @Mapping(source = "documentType.id", target = "documentTypeId")
     DocumentDto toDto(Document document);
@@ -17,6 +17,7 @@ public interface DocumentMapper {
 
     @Mapping(source = "documentType", target = "documentType")
     @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "owner", target = "owner")
     DocumentDto.Response toResponseDto(Document document);
 
     void updateDocumentFromDto(DocumentDto documentDto, @MappingTarget Document document);

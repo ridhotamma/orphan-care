@@ -26,6 +26,10 @@ public interface UserMapper {
     @Mapping(source = "profile.guardian.guardianType.id", target = "profile.guardian.guardianTypeId")
     UserDto.UserWithProfileDto toUserWithProfileDto(User user);
 
+    @Mapping(source = "profile.fullName", target = "fullName")
+    @Mapping(source = "profile.profilePicture", target = "profilePicture")
+    UserDto.DocumentOwnerDto toUserDocumentOwnerDto(User user);
+
     @Mapping(source = "createUserDto.fullName", target = "fullName")
     @Mapping(source = "createUserDto.profilePicture", target = "profilePicture")
     @Mapping(source = "createUserDto.birthday", target = "birthday")
