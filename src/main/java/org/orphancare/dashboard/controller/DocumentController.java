@@ -34,7 +34,6 @@ public class DocumentController {
     public ResponseEntity<DocumentDto> updateDocument(
             @PathVariable UUID documentId,
             @Valid @RequestBody DocumentDto documentDto) {
-        documentDto.setDocumentTypeId(documentId);
         DocumentDto updatedDocument = documentService.updateDocument(documentId, documentDto);
         return ResponseEntity.ok(updatedDocument);
     }

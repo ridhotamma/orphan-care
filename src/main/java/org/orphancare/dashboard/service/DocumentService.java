@@ -42,6 +42,7 @@ public class DocumentService {
     public DocumentDto.Response createDocument(UUID userId, DocumentDto documentDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
         DocumentType documentType = documentTypeRepository.findById(documentDto.getDocumentTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Document type not found with id " + documentDto.getDocumentTypeId()));
 
