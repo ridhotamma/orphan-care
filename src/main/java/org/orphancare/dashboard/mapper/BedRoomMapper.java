@@ -14,4 +14,8 @@ public interface BedRoomMapper {
     @Mapping(target = "bedRoomType", ignore = true)
     @Mapping(target = "profiles", ignore = true)
     BedRoom toEntity(BedRoomDto bedRoomDto);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    BedRoomDto.DropdownDto toDropdownDto(BedRoom bedRoom);
 }

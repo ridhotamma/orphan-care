@@ -26,4 +26,10 @@ public class BedRoomDto {
     private BedRoomTypeDto bedRoomType;
 
     private List<ProfileDto.ShortResponse> profiles;
+
+    @Data
+    public static class DropdownDto {
+        private UUID id;
+        private String name;
+    }
 }

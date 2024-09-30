@@ -59,4 +59,11 @@ public class BedRoomController {
         bedRoomService.deleteBedRoom(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/dropdown")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<BedRoomDto.DropdownDto>> getBedRoomListDropdown() {
+        List<BedRoomDto.DropdownDto> bedRooms = bedRoomService.getBedRoomDropdownList();
+        return ResponseEntity.ok(bedRooms);
+    }
 }

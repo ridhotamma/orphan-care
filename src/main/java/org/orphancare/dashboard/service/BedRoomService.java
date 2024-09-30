@@ -54,6 +54,12 @@ public class BedRoomService {
         return new PaginatedResponse<>(bedRoomDtos, meta);
     }
 
+    public List<BedRoomDto.DropdownDto> getBedRoomDropdownList() {
+        return bedRoomRepository.findAll()
+                .stream()
+                .map(bedRoomMapper::toDropdownDto)
+                .toList();
+    }
 
     public BedRoomDto getBedRoomById(UUID bedRoomId) {
         BedRoom bedRoom = bedRoomRepository.findById(bedRoomId)
