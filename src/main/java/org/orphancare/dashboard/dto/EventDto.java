@@ -41,4 +41,10 @@ public class EventDto {
 
     @NotBlank(message = "Place is required")
     private String place;
+
+    private String statusText;
+
+    public String getStatusText() {
+        return status != null ? status.getDisplayText() : "";
+    }
 }

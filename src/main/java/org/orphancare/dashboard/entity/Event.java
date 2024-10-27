@@ -3,6 +3,7 @@ package org.orphancare.dashboard.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -60,7 +61,23 @@ public class Event {
         updatedAt = LocalDateTime.now();
     }
 
+    @Getter
     public enum EventStatus {
-        FINISHED, PENDING, ON_PROGRESS, CANCELLED
+        FINISHED("Finished"),
+        PENDING("Pending"),
+        ON_PROGRESS("On Progress"),
+        CANCELLED("Cancelled");
+
+        private final String displayText;
+
+        EventStatus(String displayText) {
+            this.displayText = displayText;
+        }
+
+    }
+
+    @Transient
+    public String getStatusText() {
+        return status != null ? status.getDisplayText() : "";
     }
 }
