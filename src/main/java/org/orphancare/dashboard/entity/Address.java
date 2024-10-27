@@ -39,6 +39,11 @@ public class Address {
     @Size(max = 5)
     private String postalCode;
 
+    private String provinceId;
+    private String regencyId;
+    private String districtId;
+    private String villageId;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

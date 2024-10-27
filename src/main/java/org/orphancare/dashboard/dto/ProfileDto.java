@@ -33,7 +33,7 @@ public class ProfileDto {
     private GuardianDto guardian;
 
     @Valid
-    private BedRoomDto bedRoom;
+    private BedRoomDto.ShortResponse bedRoom;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
     private String phoneNumber;

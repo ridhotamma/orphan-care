@@ -32,4 +32,18 @@ public class BedRoomDto {
         private UUID id;
         private String name;
     }
+
+    @Data
+    public static class ShortResponse {
+        private UUID id;
+
+        @NotBlank
+        @NotNull
+        private String name;
+
+        @NotNull
+        private UUID bedRoomTypeId;
+
+        private BedRoomTypeDto bedRoomType;
+    }
 }
