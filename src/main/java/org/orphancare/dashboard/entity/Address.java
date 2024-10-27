@@ -25,13 +25,13 @@ public class Address {
     private String street;
 
     @Size(max = 255)
-    private String urbanVillage;
+    private String village;
 
     @Size(max = 255)
-    private String subdistrict;
+    private String regency;
 
     @Size(max = 255)
-    private String city;
+    private String district;
 
     @Size(max = 255)
     private String province;
@@ -40,8 +40,8 @@ public class Address {
     private String postalCode;
 
     private String provinceId;
-    private String regencyId;
     private String districtId;
+    private String regencyId;
     private String villageId;
 
     @Column(nullable = false, updatable = false)

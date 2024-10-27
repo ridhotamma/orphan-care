@@ -33,7 +33,7 @@ public interface AddressMapper {
         AddressDto.RegencyDto dto = new AddressDto.RegencyDto();
         dto.setId(entity.getRegencyId());
         dto.setProvinceId(entity.getProvinceId());
-        dto.setName(entity.getCity());
+        dto.setName(entity.getRegency());
         return dto;
     }
 
@@ -42,7 +42,7 @@ public interface AddressMapper {
         AddressDto.DistrictDto dto = new AddressDto.DistrictDto();
         dto.setId(entity.getDistrictId());
         dto.setRegencyId(entity.getRegencyId());
-        dto.setName(entity.getSubdistrict());
+        dto.setName(entity.getDistrict());
         return dto;
     }
 
@@ -51,7 +51,7 @@ public interface AddressMapper {
         AddressDto.VillageDto dto = new AddressDto.VillageDto();
         dto.setId(entity.getVillageId());
         dto.setDistrictId(entity.getDistrictId());
-        dto.setName(entity.getUrbanVillage());
+        dto.setName(entity.getVillage());
         return dto;
     }
 }

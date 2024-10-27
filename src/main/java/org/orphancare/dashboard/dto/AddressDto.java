@@ -10,13 +10,13 @@ public class AddressDto {
     private String street;
 
     @Size(max = 255)
-    private String urbanVillage;
+    private String village;
 
     @Size(max = 255)
-    private String subdistrict;
+    private String district;
 
     @Size(max = 255)
-    private String city;
+    private String regency;
 
     @Size(max = 255)
     private String province;
