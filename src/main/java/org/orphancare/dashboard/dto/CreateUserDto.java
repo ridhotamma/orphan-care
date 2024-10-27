@@ -38,9 +38,6 @@ public class CreateUserDto {
     @NotBlank
     private String fullName;
 
-    @NotBlank
-    private String profilePicture;
-
     @NotNull
     private LocalDate birthday;
 
@@ -71,4 +68,6 @@ public class CreateUserDto {
 
     @NotNull
     private boolean isAlumni = false;
+
+    private String profilePicture;
 }

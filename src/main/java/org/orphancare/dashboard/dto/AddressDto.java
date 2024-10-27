@@ -23,4 +23,31 @@ public class AddressDto {
 
     @Size(max = 5)
     private String postalCode;
+
+    @Data
+    public static class ProvinceDto {
+        private String id;
+        private String name;
+    }
+
+    @Data
+    public static class RegencyDto {
+        private String id;
+        private String provinceId;
+        private String name;
+    }
+
+    @Data
+    public static class DistrictDto {
+        private String id;
+        private String regencyId;
+        private String name;
+    }
+
+    @Data
+    public static class VillageDto {
+        private String id;
+        private String districtId;
+        private String name;
+    }
 }
