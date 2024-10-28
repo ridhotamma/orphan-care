@@ -9,7 +9,7 @@ import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.entity.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { AddressMapper.class })
 public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
