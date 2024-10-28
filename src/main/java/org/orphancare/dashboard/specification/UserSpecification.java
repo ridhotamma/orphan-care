@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public class UserSpecification {
 
-    public static Specification<User> withSearchCriteriaAndRoles(
-            String search, Gender gender, List<RoleType> roles, Boolean isAlumni, Boolean isCareTaker, Boolean active, UUID bedRoomId) {
+    public static Specification<User> withSearchCriteria(
+            String search, Gender gender, Boolean isAlumni, Boolean isCareTaker, Boolean active, UUID bedRoomId) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -28,10 +28,6 @@ public class UserSpecification {
 
             if (gender != null) {
                 predicates.add(criteriaBuilder.equal(profileJoin.get("gender"), gender));
-            }
-
-            if (roles != null && !roles.isEmpty()) {
-                predicates.add(root.join("roles").in(roles));
             }
 
             if (isAlumni != null) {

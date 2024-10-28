@@ -53,7 +53,6 @@ public class UserController {
     public ResponseEntity<PaginatedResponse<List<UserDto.UserWithProfileDto>>> getAllUsers(
             @RequestParam(required = false, defaultValue = "") String search,
             @RequestParam(required = false) Gender gender,
-            @RequestParam(required = false) String roles,
             @RequestParam(required = false) Boolean isAlumni,
             @RequestParam(required = false) Boolean isCareTaker,
             @RequestParam(required = false) Boolean active,
@@ -63,7 +62,7 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int perPage) {
         PaginatedResponse<List<UserDto.UserWithProfileDto>> users = userService.getAllUsers(
-                search, gender, roles, isAlumni, isCareTaker, active, bedRoomId, sortBy, sortDirection, page, perPage);
+                search, gender, isAlumni, isCareTaker, active, bedRoomId, sortBy, sortDirection, page, perPage);
         return ResponseEntity.ok(users);
     }
 

@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -127,21 +126,14 @@ public class UserService {
     }
 
     public PaginatedResponse<List<UserDto.UserWithProfileDto>> getAllUsers(
-            String search, Gender gender, String roles, Boolean isAlumni, Boolean isCareTaker, Boolean active,
+            String search, Gender gender, Boolean isAlumni, Boolean isCareTaker, Boolean active,
             UUID bedRoomId, String sortBy, String sortDirection, int page, int perPage) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
 
-        List<RoleType> roleList = (roles == null || roles.isEmpty())
-                ? Arrays.asList(RoleType.ROLE_USER, RoleType.ROLE_ADMIN)
-                : Arrays.stream(roles.split(","))
-                .map(String::trim)
-                .map(RoleType::valueOf)
-                .collect(Collectors.toList());
-
         Page<User> userPage = userRepository.findAll(
-                UserSpecification.withSearchCriteriaAndRoles(search, gender, roleList, isAlumni, isCareTaker, active, bedRoomId),
+                UserSpecification.withSearchCriteria(search, gender, isAlumni, isCareTaker, active, bedRoomId),
                 pageable
         );
 
