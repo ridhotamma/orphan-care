@@ -12,6 +12,8 @@ public interface ProfileMapper {
     @Mapping(source = "profile.bedRoom", target = "bedRoom")
     @Mapping(source = "profile.address", target = "address")
     @Mapping(source = "profile.guardian", target = "guardian")
+    @Mapping(source = "profile.guardian.guardianType.id", target = "guardian.guardianTypeId")
+    @Mapping(source = "profile.bedRoom.bedRoomType.id", target = "bedRoom.bedRoomTypeId")
     ProfileDto toDto(Profile profile);
 
     @Mapping(source = "profileDto.bedRoomId", target = "bedRoom.id")

@@ -6,6 +6,7 @@ import org.orphancare.dashboard.dto.UserDto;
 import org.orphancare.dashboard.entity.*;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.AddressMapper;
+import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.ProfileMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
@@ -31,6 +32,7 @@ public class ProfileService {
     private final AddressMapper addressMapper;
     private final UserMapper userMapper;
     private final RequestUtil requestUtil;
+    private final GuardianMapper guardianMapper;
 
     public ProfileDto createOrUpdateProfile(UUID userId, ProfileDto profileDto) {
         User user = userRepository.findById(userId)
@@ -56,6 +58,7 @@ public class ProfileService {
         profile.setBedRoom(bedRoom);
         profile.setCareTaker(profileDto.isCareTaker());
         profile.setAlumni(profileDto.isAlumni());
+        profile.setGuardian(guardianMapper.toEntity(profileDto.getGuardian()));
 
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
