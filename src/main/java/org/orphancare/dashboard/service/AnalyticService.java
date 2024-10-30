@@ -76,17 +76,17 @@ public class AnalyticService {
         LocalDate previousYearStart = currentYearStart.minusYears(1);
         LocalDate previousYearEnd = currentYearStart.minusDays(1);
 
-        // Male calculations
-        long totalMaleCount = profileRepository.countByGender(Gender.MALE);
-        long currentYearMaleCount = profileRepository.countByGenderAndJoinDateBetween(Gender.MALE, currentYearStart, now);
-        long previousYearMaleCount = profileRepository.countByGenderAndJoinDateBetween(Gender.MALE, previousYearStart, previousYearEnd);
-        String maleDifference = calculatePercentageDifference(previousYearMaleCount, currentYearMaleCount);
+        // Male student calculations
+        long totalStudentMaleCount = profileRepository.countStudentsByGender(Gender.MALE);
+        long currentYearStudentMaleCount = profileRepository.countStudentsByGenderAndJoinDateBetween(Gender.MALE, currentYearStart, now);
+        long previousYearStudentMaleCount = profileRepository.countStudentsByGenderAndJoinDateBetween(Gender.MALE, previousYearStart, previousYearEnd);
+        String studentMaleDifference = calculatePercentageDifference(previousYearStudentMaleCount, currentYearStudentMaleCount);
 
-        // Female calculations
-        long totalFemaleCount = profileRepository.countByGender(Gender.FEMALE);
-        long currentYearFemaleCount = profileRepository.countByGenderAndJoinDateBetween(Gender.FEMALE, currentYearStart, now);
-        long previousYearFemaleCount = profileRepository.countByGenderAndJoinDateBetween(Gender.FEMALE, previousYearStart, previousYearEnd);
-        String femaleDifference = calculatePercentageDifference(previousYearFemaleCount, currentYearFemaleCount);
+        // Female student calculations
+        long totalStudentFemaleCount = profileRepository.countStudentsByGender(Gender.FEMALE);
+        long currentYearStudentFemaleCount = profileRepository.countStudentsByGenderAndJoinDateBetween(Gender.FEMALE, currentYearStart, now);
+        long previousYearStudentFemaleCount = profileRepository.countStudentsByGenderAndJoinDateBetween(Gender.FEMALE, previousYearStart, previousYearEnd);
+        String studentFemaleDifference = calculatePercentageDifference(previousYearStudentFemaleCount, currentYearStudentFemaleCount);
 
         long adminCount = userRepository.countUsersByRoleAdmin();
         long userCount = userRepository.countUsersByRoleUser();
@@ -100,11 +100,11 @@ public class AnalyticService {
         // Create profile mapping
         Map<String, Object> profileMapping = new HashMap<>();
 
-        // Male data
-        profileMapping.put("maleCount", totalMaleCount);
-        profileMapping.put("currentYearMaleCount", currentYearMaleCount);
-        profileMapping.put("previousYearMaleCount", previousYearMaleCount);
-        profileMapping.put("maleDifference", maleDifference);
+        // Male student data
+        profileMapping.put("totalStudentMaleCount", totalStudentMaleCount);
+        profileMapping.put("currentYearStudentMaleCount", currentYearStudentMaleCount);
+        profileMapping.put("previousYearStudentMaleCount", previousYearStudentMaleCount);
+        profileMapping.put("studentMaleDifference", studentMaleDifference);
         profileMapping.put("adminCount", adminCount);
         profileMapping.put("userCount", userCount);
         profileMapping.put("careTakerCount", careTakerCount);
@@ -113,11 +113,11 @@ public class AnalyticService {
         profileMapping.put("studentAdminCount", studentAdminCount);
         profileMapping.put("alumniCount", alumniCount);
 
-        // Female data
-        profileMapping.put("femaleCount", totalFemaleCount);
-        profileMapping.put("currentYearFemaleCount", currentYearFemaleCount);
-        profileMapping.put("previousYearFemaleCount", previousYearFemaleCount);
-        profileMapping.put("femaleDifference", femaleDifference);
+        // Female student data
+        profileMapping.put("totalStudentFemaleCount", totalStudentFemaleCount);
+        profileMapping.put("currentYearStudentFemaleCount", currentYearStudentFemaleCount);
+        profileMapping.put("previousYearStudentFemaleCount", previousYearStudentFemaleCount);
+        profileMapping.put("studentFemaleDifference", studentFemaleDifference);
 
         return profileMapping;
     }
