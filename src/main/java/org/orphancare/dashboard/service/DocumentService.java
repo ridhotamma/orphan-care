@@ -160,4 +160,31 @@ public class DocumentService {
             return "OLDER";
         }
     }
+
+    public PaginatedResponse<List<DocumentDto.Response>> getAllDocuments(
+            String name, UUID documentTypeId, UUID ownerId,
+            String sortBy, String sortOrder, int page, int perPage) {
+
+        Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
+
+        Specification<Document> spec = Specification.where(DocumentSpecification.nameContains(name))
+                .and(DocumentSpecification.documentTypeIdEquals(documentTypeId))
+                .and(DocumentSpecification.ownerIdEquals(ownerId));
+
+        Page<Document> documentsPage = documentRepository.findAll(spec, pageable);
+
+        List<DocumentDto.Response> documentDtos = documentsPage.getContent().stream()
+                .map(documentMapper::toResponseDto)
+                .collect(Collectors.toList());
+
+        PaginatedResponse.Meta meta = new PaginatedResponse.Meta(
+                documentsPage.getNumber(),
+                documentsPage.getSize(),
+                documentsPage.getTotalElements(),
+                documentsPage.getTotalPages()
+        );
+
+        return new PaginatedResponse<>(documentDtos, meta);
+    }
 }

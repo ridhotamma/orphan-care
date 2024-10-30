@@ -92,4 +92,19 @@ public class DocumentController {
         List<DocumentTypeDto> missingMandatoryDocuments = documentService.getMissingMandatoryDocuments(userId);
         return ResponseEntity.ok(missingMandatoryDocuments);
     }
+
+    @GetMapping("/all-documents")
+    @PreAuthorize("hasRole('ADMIN')")  // Restricted to admin since it can access all users' documents
+    public ResponseEntity<PaginatedResponse<List<DocumentDto.Response>>> getAllDocuments(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) UUID documentTypeId,
+            @RequestParam(required = false) UUID ownerId,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortOrder,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage) {
+        PaginatedResponse<List<DocumentDto.Response>> documents = documentService.getAllDocuments(
+                name, documentTypeId, ownerId, sortBy, sortOrder, page, perPage);
+        return ResponseEntity.ok(documents);
+    }
 }
