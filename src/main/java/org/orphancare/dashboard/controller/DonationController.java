@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.DonationDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.service.DonationService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,11 +24,14 @@ public class DonationController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginatedResponse<List<DonationDto>>> getDonations(
-        @RequestParam(required = false) String name,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int perPage
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int perPage
     ) {
-        PaginatedResponse<List<DonationDto>> donations = donationService.getAllDonations(name, page, perPage);
+        PaginatedResponse<List<DonationDto>> donations =
+                donationService.getAllDonations(name, startDate, endDate, page, perPage);
         return ResponseEntity.ok(donations);
     }
 

@@ -19,9 +19,12 @@ public class ProfileDto {
     private LocalDate joinDate;
     private LocalDate leaveDate;
     private String bio;
-    private UUID bedRoomId;
     private boolean isAlumni;
     private boolean isCareTaker;
+    private BedRoomDto.ShortResponse bedRoom;
+
+    @NotNull
+    private UUID bedRoomId;
 
     @NotBlank
     private String fullName;
@@ -31,9 +34,6 @@ public class ProfileDto {
 
     @Valid
     private GuardianDto guardian;
-
-    @Valid
-    private BedRoomDto.ShortResponse bedRoom;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
     private String phoneNumber;

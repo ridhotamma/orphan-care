@@ -67,4 +67,22 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
             "LIMIT 10",
             nativeQuery = true)
     List<Map<String, Object>> findLatest10Donations();
+
+    Page<Donation> findByReceivedDateBetweenAndNameContainingIgnoreCase(
+            LocalDate startDate,
+            LocalDate endDate,
+            String name,
+            Pageable pageable
+    );
+
+    Page<Donation> findByReceivedDateBetween(
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable
+    );
+
+    List<Donation> findByReceivedDateBetweenOrderByReceivedDateDesc(
+            LocalDate startDate,
+            LocalDate endDate
+    );
 }

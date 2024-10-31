@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,11 +32,26 @@ public class DonationService {
     private final UnitRepository unitRepository;
     private final DonationMapper donationMapper;
 
-    public PaginatedResponse<List<DonationDto>> getAllDonations(String name, int page, int perPage) {
+    public PaginatedResponse<List<DonationDto>> getAllDonations(
+            String name,
+            LocalDate startDate,
+            LocalDate endDate,
+            int page,
+            int perPage) {
+
         Pageable pageable = PageRequest.of(page, perPage);
-        Page<Donation> donationsPage = (name == null || name.isEmpty()) ?
-                donationRepository.findAll(pageable) :
-                donationRepository.findByNameContainingIgnoreCase(name, pageable);
+        Page<Donation> donationsPage;
+
+        if (startDate != null && endDate != null) {
+            donationsPage = (name == null || name.isEmpty()) ?
+                    donationRepository.findByReceivedDateBetween(startDate, endDate, pageable) :
+                    donationRepository.findByReceivedDateBetweenAndNameContainingIgnoreCase(
+                            startDate, endDate, name, pageable);
+        } else {
+            donationsPage = (name == null || name.isEmpty()) ?
+                    donationRepository.findAll(pageable) :
+                    donationRepository.findByNameContainingIgnoreCase(name, pageable);
+        }
 
         List<DonationDto> donationDtos = donationsPage.getContent()
                 .stream()
