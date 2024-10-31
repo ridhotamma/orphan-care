@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,4 +19,12 @@ public interface EventRepository extends JpaRepository<Event, UUID>, JpaSpecific
             "e.organizer_phone_number as \"organizerPhoneNumber\", e.place as place " +
             "FROM events e ORDER BY e.start_date DESC LIMIT 10", nativeQuery = true)
     List<Map<String, Object>> findLatest10Events();
+
+    List<Event> findByStatusNotInAndEndDateBefore(List<Event.EventStatus> statuses, LocalDate date);
+
+    List<Event> findByStatusAndStartDateBeforeAndEndDateAfter(
+            Event.EventStatus status,
+            LocalDate startDate,
+            LocalDate endDate
+    );
 }
