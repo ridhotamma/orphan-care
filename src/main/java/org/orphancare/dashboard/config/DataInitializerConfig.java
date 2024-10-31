@@ -55,6 +55,7 @@ public class DataInitializerConfig implements CommandLineRunner {
         initializeDocumentTypes();
         initializeBedRoomTypes();
         initializeGuardianTypes();
+        initializeDonationTypes();
     }
 
     private void initializeAdminUser() {
