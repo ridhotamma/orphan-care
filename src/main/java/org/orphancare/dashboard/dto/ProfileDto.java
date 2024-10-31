@@ -45,6 +45,7 @@ public class ProfileDto {
 
     @Data
     public static class ShortResponse {
+        private UUID id;
         private String fullName;
         private String profilePicture;
         private Gender gender;
