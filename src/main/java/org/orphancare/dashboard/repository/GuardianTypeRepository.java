@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface GuardianTypeRepository extends JpaRepository<GuardianType, UUID> {
+    boolean existsByNameOrType(String name, String type);
 }

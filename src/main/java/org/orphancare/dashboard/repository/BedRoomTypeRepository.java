@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface BedRoomTypeRepository extends JpaRepository<BedRoomType, UUID> {
+    boolean existsByNameOrType(String name, String type);
 }

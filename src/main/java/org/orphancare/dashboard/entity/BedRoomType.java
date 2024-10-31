@@ -22,10 +22,10 @@ public class BedRoomType {
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    public String Name;
+    public String name;
 
     @Column(nullable = false, unique = true)
-    public String Type;
+    public String type;
 
     @OneToMany(mappedBy = "bedRoomType", cascade = CascadeType.ALL)
     private Set<BedRoom> bedRooms;

@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface DocumentTypeRepository extends JpaRepository<DocumentType, UUID> {
     List<DocumentType> findByIsMandatoryTrue();
+    boolean existsByNameOrType(String name, String type);
 }
