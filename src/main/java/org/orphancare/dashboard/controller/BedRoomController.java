@@ -24,8 +24,8 @@ public class BedRoomController {
     public ResponseEntity<PaginatedResponse<List<BedRoomDto>>> getAllBedRooms(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) UUID bedRoomTypeId,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "ASC") String sortOrder,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortOrder,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage) {
         PaginatedResponse<List<BedRoomDto>> bedRooms = bedRoomService.getAllBedrooms(name, bedRoomTypeId, sortBy, sortOrder, page, perPage);
@@ -41,15 +41,15 @@ public class BedRoomController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BedRoomDto> createBedRoom(@RequestBody @Valid BedRoomDto bedRoomDto) {
-        BedRoomDto createdBedRoom = bedRoomService.createBedRoom(bedRoomDto);
+    public ResponseEntity<BedRoomDto> createBedRoom(@RequestBody @Valid BedRoomDto.CreateBedRoomDto createBedRoomDto) {
+        BedRoomDto createdBedRoom = bedRoomService.createBedRoom(createBedRoomDto);
         return ResponseEntity.status(201).body(createdBedRoom);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BedRoomDto> updateBedRoom(@PathVariable UUID id, @RequestBody @Valid BedRoomDto bedRoomDto) {
-        BedRoomDto updatedBedRoom = bedRoomService.updateBedRoom(id, bedRoomDto);
+    public ResponseEntity<BedRoomDto> updateBedRoom(@PathVariable UUID id, @RequestBody @Valid BedRoomDto.UpdateBedRoomDto updateBedRoomDto) {
+        BedRoomDto updatedBedRoom = bedRoomService.updateBedRoom(id, updateBedRoomDto);
         return ResponseEntity.ok(updatedBedRoom);
     }
 

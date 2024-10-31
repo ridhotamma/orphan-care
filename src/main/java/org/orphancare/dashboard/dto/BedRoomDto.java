@@ -46,4 +46,32 @@ public class BedRoomDto {
 
         private BedRoomTypeDto bedRoomType;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateBedRoomDto {
+        @NotBlank(message = "Name is required")
+        @NotNull(message = "Name cannot be null")
+        private String name;
+
+        @NotNull(message = "Bedroom type ID is required")
+        private UUID bedRoomTypeId;
+
+        private List<UUID> profiles;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateBedRoomDto {
+        @NotBlank(message = "Name is required")
+        @NotNull(message = "Name cannot be null")
+        private String name;
+
+        @NotNull(message = "Bedroom type ID is required")
+        private UUID bedRoomTypeId;
+
+        private List<UUID> profiles;
+    }
 }

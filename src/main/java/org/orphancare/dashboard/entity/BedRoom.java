@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +31,8 @@ public class BedRoom {
     @JoinColumn(name = "bedroom_type_id", nullable = false)
     private BedRoomType bedRoomType;
 
-    @OneToMany(mappedBy = "bedRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Profile> profiles;
+    @OneToMany(mappedBy = "bedRoom")
+    private List<Profile> profiles = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -48,5 +49,17 @@ public class BedRoom {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        if (this.profiles != null) {
+            this.profiles.forEach(profile -> profile.setBedRoom(null));
+        }
+
+        this.profiles = profiles;
+
+        if (profiles != null) {
+            profiles.forEach(profile -> profile.setBedRoom(this));
+        }
     }
 }

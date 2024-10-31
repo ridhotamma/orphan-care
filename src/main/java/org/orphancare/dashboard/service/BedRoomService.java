@@ -6,10 +6,12 @@ import org.orphancare.dashboard.dto.BedRoomDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.BedRoom;
 import org.orphancare.dashboard.entity.BedRoomType;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.BedRoomMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
 import org.orphancare.dashboard.repository.BedRoomTypeRepository;
+import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.specification.BedRoomSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,7 @@ public class BedRoomService {
 
     private final BedRoomRepository bedRoomRepository;
     private final BedRoomTypeRepository bedRoomTypeRepository;
+    private final ProfileRepository profileRepository;
     private final BedRoomMapper bedRoomMapper;
 
     public PaginatedResponse<List<BedRoomDto>> getAllBedrooms(String name, UUID bedRoomTypeId, String sortBy, String sortOrder, int page, int perPage) {
@@ -68,24 +71,39 @@ public class BedRoomService {
         return bedRoomMapper.toDto(bedRoom);
     }
 
-    public BedRoomDto createBedRoom(BedRoomDto bedRoomDto) {
-        BedRoomType bedRoomType = bedRoomTypeRepository.findById(bedRoomDto.getBedRoomTypeId())
+    public BedRoomDto createBedRoom(BedRoomDto.CreateBedRoomDto createBedRoomDto) {
+        BedRoomType bedRoomType = bedRoomTypeRepository.findById(createBedRoomDto.getBedRoomTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bed room type not found"));
-        BedRoom bedRoom = bedRoomMapper.toEntity(bedRoomDto);
+
+        BedRoom bedRoom = bedRoomMapper.toEntity(createBedRoomDto);
         bedRoom.setBedRoomType(bedRoomType);
+
+        if (createBedRoomDto.getProfiles() != null && !createBedRoomDto.getProfiles().isEmpty()) {
+            List<Profile> profiles = profileRepository.findAllById(createBedRoomDto.getProfiles());
+            bedRoom.setProfiles(profiles);
+            profileRepository.saveAll(profiles);
+        }
+
         bedRoom = bedRoomRepository.save(bedRoom);
         return bedRoomMapper.toDto(bedRoom);
     }
 
-    public BedRoomDto updateBedRoom(UUID id, BedRoomDto bedRoomDto) {
+    public BedRoomDto updateBedRoom(UUID id, BedRoomDto.UpdateBedRoomDto updateBedRoomDto) {
         BedRoom existingBedRoom = bedRoomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bed room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bed room not found"));
 
-        BedRoomType bedRoomType = bedRoomTypeRepository.findById(bedRoomDto.getBedRoomTypeId())
+        BedRoomType bedRoomType = bedRoomTypeRepository.findById(updateBedRoomDto.getBedRoomTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bed room type not found"));
 
-        existingBedRoom.setName(bedRoomDto.getName());
+        bedRoomMapper.updateEntity(existingBedRoom, updateBedRoomDto);
         existingBedRoom.setBedRoomType(bedRoomType);
+
+        if (updateBedRoomDto.getProfiles() != null) {
+            List<Profile> profiles = profileRepository.findAllById(updateBedRoomDto.getProfiles());
+            existingBedRoom.setProfiles(profiles);
+            profileRepository.saveAll(profiles);
+        }
+
         existingBedRoom = bedRoomRepository.save(existingBedRoom);
         return bedRoomMapper.toDto(existingBedRoom);
     }

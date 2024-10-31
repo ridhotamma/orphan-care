@@ -14,6 +14,7 @@ import java.util.UUID;
 @Data
 public class ProfileDto {
 
+    private UUID id;
     private String profilePicture;
     private LocalDate birthday;
     private LocalDate joinDate;
