@@ -86,14 +86,4 @@ public class Profile {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    public void setUser(User user) {
-        if (this.user != null) {
-            this.user.setProfile(null);
-        }
-        this.user = user;
-        if (user != null && user.getProfile() != this) {
-            user.setProfile(this);
-        }
-    }
 }

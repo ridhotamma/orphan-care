@@ -72,17 +72,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    public void setProfile(Profile profile) {
-        if (profile == null) {
-            if (this.profile != null) {
-                this.profile.setUser(null);
-            }
-        } else {
-            profile.setUser(this);
-        }
-        this.profile = profile;
-    }
-
     public void addDocument(Document document) {
         documents.add(document);
         document.setOwner(this);

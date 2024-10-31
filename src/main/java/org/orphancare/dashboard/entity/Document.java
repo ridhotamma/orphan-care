@@ -51,14 +51,4 @@ public class Document {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    public void setOwner(User owner) {
-        if (this.owner != null) {
-            this.owner.getDocuments().remove(this);
-        }
-        this.owner = owner;
-        if (owner != null) {
-            owner.getDocuments().add(this);
-        }
-    }
 }
