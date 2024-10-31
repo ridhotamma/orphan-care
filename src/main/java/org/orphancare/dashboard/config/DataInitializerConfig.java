@@ -21,6 +21,7 @@ public class DataInitializerConfig implements CommandLineRunner {
     private final DocumentTypeRepository documentTypeRepository;
     private final BedRoomTypeRepository bedRoomTypeRepository;
     private final GuardianTypeRepository guardianTypeRepository;
+    private final DonationTypeRepository donationTypeRepository;
 
     @Value("${admin.email}")
     private String adminEmail;
@@ -93,11 +94,12 @@ public class DataInitializerConfig implements CommandLineRunner {
 
     private void initializeUnits() {
         List<Unit> units = Arrays.asList(
-                createUnit("Meters", "LENGTH"),
-                createUnit("Kilograms", "WEIGHT"),
-                createUnit("Square Meters", "AREA"),
-                createUnit("Celsius", "TEMPERATURE"),
-                createUnit("Pieces", "QUANTITY")
+                createUnit("Rupiah (IDR)", "RUPIAH"),
+                createUnit("Dollar (USD)", "DOLLAR"),
+                createUnit("Meter", "LENGTH"),
+                createUnit("Kilogram", "WEIGHT"),
+                createUnit("Box", "BOX"),
+                createUnit("Pcs", "QUANTITY")
         );
 
         for (Unit unit : units) {
@@ -114,11 +116,13 @@ public class DataInitializerConfig implements CommandLineRunner {
 
     private void initializeDocumentTypes() {
         List<DocumentType> documentTypes = Arrays.asList(
-                createDocumentType("National ID", "IDENTIFICATION", true),
-                createDocumentType("Birth Certificate", "BIRTH_CERT", true),
-                createDocumentType("Medical Records", "MEDICAL", true),
-                createDocumentType("School Records", "EDUCATION", false),
-                createDocumentType("Guardian Documents", "LEGAL", true)
+                createDocumentType("Ijazah SD", "ELEMENTARY_SCHOOL_CERTIFICATE", false),
+                createDocumentType("Ijazah SMP", "JUNIOR_HIGH_SCHOOL_CERTIFICATE", false),
+                createDocumentType("Ijazah SMA", "SENIOR_HIGH_SCHOOL_CERTIFICATE", false),
+                createDocumentType("Rekaman Medis", "MEDICAL_RECORD", false),
+                createDocumentType("Data Rapot Siswa", "ACADEMIC_REPORT", false),
+                createDocumentType("Kartu Keluarga", "FAMILY_IDENTIFICATION_ID", true),
+                createDocumentType("Akta Kelahiran", "BIRTH_CERTIFICATE", false)
         );
 
         for (DocumentType docType : documentTypes) {
@@ -135,11 +139,12 @@ public class DataInitializerConfig implements CommandLineRunner {
 
     private void initializeBedRoomTypes() {
         List<BedRoomType> bedRoomTypes = Arrays.asList(
-                createBedRoomType("Single Bed", "SINGLE"),
-                createBedRoomType("Double Bed", "DOUBLE"),
-                createBedRoomType("Dormitory", "MULTIPLE"),
-                createBedRoomType("Special Needs", "SPECIAL"),
-                createBedRoomType("Isolation", "MEDICAL")
+                createBedRoomType("Kamar Anak Asuh Laki-laki", "BEDROOM_CHILD_MALE"),
+                createBedRoomType("Kamar Anak Asuh Perempuan", "BEDROOM_CHILD_FEMALE"),
+                createBedRoomType("Kamar Pengasuh Laki-laki", "BEDROOM_CARETAKER_MALE"),
+                createBedRoomType("Kamar Pengasuh Perempuan", "BEDROOM_CARETAKER_FEMALE"),
+                createBedRoomType("Kamar Tamu", "BEDROOM_GUEST"),
+                createBedRoomType("Kamar Sewa", "BEDROOM_RENTAL")
         );
 
         for (BedRoomType bedRoomType : bedRoomTypes) {
@@ -156,11 +161,15 @@ public class DataInitializerConfig implements CommandLineRunner {
 
     private void initializeGuardianTypes() {
         List<GuardianType> guardianTypes = Arrays.asList(
-                createGuardianType("Biological Parent", "BIOLOGICAL"),
-                createGuardianType("Foster Parent", "FOSTER"),
-                createGuardianType("Legal Guardian", "LEGAL"),
-                createGuardianType("Temporary Guardian", "TEMPORARY"),
-                createGuardianType("Institution", "INSTITUTION")
+                createGuardianType("Ayah Kandung", "BIOLOGICAL_FATHER"),
+                createGuardianType("Ibu Kandung", "BIOLOGICAL_MOTHER"),
+                createGuardianType("Saudara Perempuan", "SISTER"),
+                createGuardianType("Saudara Laki-laki", "BROTHER"),
+                createGuardianType("Paman", "UNCLE"),
+                createGuardianType("Bibi", "AUNT"),
+                createGuardianType("Ayah Tiri", "STEP_FATHER"),
+                createGuardianType("Ibu Tiri", "STEP_MOTHER"),
+                createGuardianType("Lainnya", "OTHER")
         );
 
         for (GuardianType guardianType : guardianTypes) {
@@ -171,6 +180,31 @@ public class DataInitializerConfig implements CommandLineRunner {
                 }
             } catch (Exception e) {
                 System.out.println("Failed to create guardian type " + guardianType.getName() + ": " + e.getMessage());
+            }
+        }
+    }
+
+    private void initializeDonationTypes() {
+        List<DonationType> donationTypes = Arrays.asList(
+                createDonationType("Uang", "MONETARY"),
+                createDonationType("Makanan", "CONSUMABLE"),
+                createDonationType("Pakaian", "WEARABLE"),
+                createDonationType("Material Edukasi", "EDUCATIONAL"),
+                createDonationType("Alat Kesehatan", "MEDICAL"),
+                createDonationType("Furnitur", "FURNITURE"),
+                createDonationType("Elektronik", "ELECTRONIC"),
+                createDonationType("Mainan", "RECREATIONAL"),
+                createDonationType("Lainnya", "OTHER")
+        );
+
+        for (DonationType donationType : donationTypes) {
+            try {
+                if (!donationTypeRepository.existsByNameOrType(donationType.getName(), donationType.getType())) {
+                    donationTypeRepository.save(donationType);
+                    System.out.println("Donation type created: " + donationType.getName());
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to create donation type " + donationType.getName() + ": " + e.getMessage());
             }
         }
     }
@@ -202,5 +236,12 @@ public class DataInitializerConfig implements CommandLineRunner {
         guardianType.setName(name);
         guardianType.setType(type);
         return guardianType;
+    }
+
+    private DonationType createDonationType(String name, String type) {
+        DonationType donationType = new DonationType();
+        donationType.setName(name);
+        donationType.setType(type);
+        return donationType;
     }
 }

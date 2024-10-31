@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface DonationTypeRepository extends JpaRepository<DonationType, UUID> {
+    boolean existsByNameOrType(String name, String type);
 }
