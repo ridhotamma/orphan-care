@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -21,7 +22,7 @@ public class AddressDto {
     @Size(max = 255)
     private String province;
 
-    @Size(max = 5)
+    @Pattern(regexp = "^[0-9]{5}$|^$", message = "Postal code must be exactly 5 digits or empty")
     private String postalCode;
 
     private ProvinceDto provinceDetail;
