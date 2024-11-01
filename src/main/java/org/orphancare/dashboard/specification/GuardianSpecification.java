@@ -20,7 +20,7 @@ public class GuardianSpecification {
                 String lowercaseSearch = "%" + search.toLowerCase() + "%";
                 predicates.add(criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")), lowercaseSearch),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), lowercaseSearch)
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("phoneNumber")), lowercaseSearch)
                 ));
             }
 
