@@ -27,10 +27,18 @@ public class GuardianDto {
     @Data
     public static class Response {
         private UUID id;
+
+        @NotNull
         private String fullName;
+
+        @NotNull
         private String phoneNumber;
+
         private AddressDto address;
+
         private GuardianTypeDto guardianType;
+
+        @NotNull
         private UUID guardianTypeId;
     }
 }

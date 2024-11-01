@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.orphancare.dashboard.entity.Gender;
+import org.orphancare.dashboard.entity.Profile;
+import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidGender;
 
 import java.time.LocalDate;
@@ -42,6 +44,19 @@ public class ProfileDto {
     @NotNull
     @ValidGender
     private String gender;
+
+    @Pattern(regexp = "^\\d{16}$", message = "NIK must be exactly 16 digits")
+    @NoWhiteSpace
+    private String nikNumber;
+
+    @Pattern(regexp = "^\\d{16}$", message = "KK number must be exactly 16 digits")
+    @NoWhiteSpace
+    private String kkNumber;
+
+    @NotNull
+    private Profile.OrphanType orphanType;
+
+    private String orphanTypeText;
 
     @Data
     public static class ShortResponse {

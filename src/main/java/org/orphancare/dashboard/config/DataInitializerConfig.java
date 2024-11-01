@@ -123,7 +123,9 @@ public class DataInitializerConfig implements CommandLineRunner {
                 createDocumentType("Rekaman Medis", "MEDICAL_RECORD", false),
                 createDocumentType("Data Rapot Siswa", "ACADEMIC_REPORT", false),
                 createDocumentType("Kartu Keluarga", "FAMILY_IDENTIFICATION_ID", true),
-                createDocumentType("Akta Kelahiran", "BIRTH_CERTIFICATE", false)
+                createDocumentType("Akta Kelahiran", "BIRTH_CERTIFICATE", false),
+                createDocumentType("Invoice Pembayaran", "INVOICE", false),
+                createDocumentType("Lainnya", "OTHER", false)
         );
 
         for (DocumentType docType : documentTypes) {

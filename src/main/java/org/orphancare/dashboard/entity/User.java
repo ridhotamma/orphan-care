@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

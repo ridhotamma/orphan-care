@@ -2,9 +2,12 @@ package org.orphancare.dashboard.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orphancare.dashboard.validation.NoWhiteSpace;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,6 +73,20 @@ public class Profile {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isAlumni = false;
 
+    @Size(min = 16, max = 16)
+    @Column(unique = true)
+    @NoWhiteSpace
+    private String nikNumber;
+
+    @Size(min = 16, max = 16)
+    @Column(unique = true)
+    @NoWhiteSpace
+    private String kkNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column()
+    private OrphanType orphanType;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -85,5 +102,27 @@ public class Profile {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    @Getter
+    public enum OrphanType {
+        FATHERLESS,
+        MOTHERLESS,
+        BOTH_DECEASED,
+        POOR;
+
+        public String getDisplayText() {
+            return switch (this) {
+                case FATHERLESS -> "Yatim";
+                case MOTHERLESS -> "Piatu";
+                case BOTH_DECEASED -> "Yatim Piatu";
+                case POOR -> "Dhuafa";
+            };
+        }
+    }
+
+    @Transient
+    public String getOrphanTypeText() {
+        return orphanType != null ? orphanType.getDisplayText() : "";
     }
 }

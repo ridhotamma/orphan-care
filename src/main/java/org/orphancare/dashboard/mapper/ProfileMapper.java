@@ -14,6 +14,7 @@ public interface ProfileMapper {
     @Mapping(source = "profile.guardian", target = "guardian")
     @Mapping(source = "profile.guardian.guardianType.id", target = "guardian.guardianTypeId")
     @Mapping(source = "profile.bedRoom.bedRoomType.id", target = "bedRoom.bedRoomTypeId")
+    @Mapping(target = "orphanTypeText", expression = "java(profile.getOrphanTypeText())")
     ProfileDto toDto(Profile profile);
 
     @Mapping(source = "profileDto.bedRoomId", target = "bedRoom.id")

@@ -59,6 +59,9 @@ public class ProfileService {
         profile.setCareTaker(profileDto.isCareTaker());
         profile.setAlumni(profileDto.isAlumni());
         profile.setGuardian(guardianMapper.toEntityFromResponse(profileDto.getGuardian()));
+        profile.setNikNumber(profileDto.getNikNumber());
+        profile.setKkNumber(profileDto.getKkNumber());
+        profile.setOrphanType(profileDto.getOrphanType());
 
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
