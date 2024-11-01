@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -71,15 +70,5 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    public void addDocument(Document document) {
-        documents.add(document);
-        document.setOwner(this);
-    }
-
-    public void removeDocument(Document document) {
-        documents.remove(document);
-        document.setOwner(null);
     }
 }

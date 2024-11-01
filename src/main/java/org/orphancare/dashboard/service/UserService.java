@@ -10,6 +10,7 @@ import org.orphancare.dashboard.mapper.AddressMapper;
 import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
+import org.orphancare.dashboard.repository.GuardianTypeRepository;
 import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.orphancare.dashboard.specification.UserSpecification;
@@ -39,6 +40,7 @@ public class UserService {
     private final AddressMapper addressMapper;
     private final GuardianMapper guardianMapper;
     private final RequestUtil requestUtil;
+    private final GuardianTypeRepository guardianTypeRepository;
 
     public UserDto.UserWithProfileDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
@@ -52,6 +54,10 @@ public class UserService {
             throw new DataAlreadyExistsException("KK Number is already in use");
         }
 
+
+        GuardianType guardianType = guardianTypeRepository.findById(createUserDto.getGuardian().getGuardianTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("guardianType not found with id " + createUserDto.getGuardian().getGuardianTypeId()));
+
         BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
 
@@ -61,7 +67,9 @@ public class UserService {
 
         Address address = addressMapper.toEntity(createUserDto.getAddress());
         Profile profile = userMapper.toProfileEntity(createUserDto);
+
         Guardian guardian = guardianMapper.toEntity(createUserDto.getGuardian());
+        guardian.setGuardianType(guardianType);
 
         profile.setUser(user);
         profile.setBedRoom(bedRoom);

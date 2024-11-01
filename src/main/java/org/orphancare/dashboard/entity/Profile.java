@@ -74,7 +74,7 @@ public class Profile {
     private boolean isAlumni = false;
 
     @Size(min = 16, max = 16)
-    @Column(unique = true)
+    @Column()
     @NoWhiteSpace
     private String nikNumber;
 
