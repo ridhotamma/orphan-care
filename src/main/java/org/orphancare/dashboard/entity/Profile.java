@@ -63,7 +63,7 @@ public class Profile {
     @JoinColumn(name = "bedroom_id")
     private BedRoom bedRoom;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "guardian_id")
     private Guardian guardian;
 

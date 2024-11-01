@@ -9,10 +9,7 @@ import org.orphancare.dashboard.exception.DataAlreadyExistsException;
 import org.orphancare.dashboard.mapper.AddressMapper;
 import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
-import org.orphancare.dashboard.repository.BedRoomRepository;
-import org.orphancare.dashboard.repository.GuardianTypeRepository;
-import org.orphancare.dashboard.repository.ProfileRepository;
-import org.orphancare.dashboard.repository.UserRepository;
+import org.orphancare.dashboard.repository.*;
 import org.orphancare.dashboard.specification.UserSpecification;
 import org.orphancare.dashboard.util.RequestUtil;
 import org.springframework.data.domain.Page;
@@ -41,6 +38,7 @@ public class UserService {
     private final GuardianMapper guardianMapper;
     private final RequestUtil requestUtil;
     private final GuardianTypeRepository guardianTypeRepository;
+    private final GuardianRepository guardianRepository;
 
     public UserDto.UserWithProfileDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
@@ -53,7 +51,6 @@ public class UserService {
         if (profileRepository.existsByNikNumber(createUserDto.getNikNumber())) {
             throw new DataAlreadyExistsException("Nik Number is already in use");
         }
-
 
         GuardianType guardianType = guardianTypeRepository.findById(createUserDto.getGuardian().getGuardianTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("guardianType not found with id " + createUserDto.getGuardian().getGuardianTypeId()));
@@ -68,8 +65,23 @@ public class UserService {
         Address address = addressMapper.toEntity(createUserDto.getAddress());
         Profile profile = userMapper.toProfileEntity(createUserDto);
 
-        Guardian guardian = guardianMapper.toEntity(createUserDto.getGuardian());
-        guardian.setGuardianType(guardianType);
+        Guardian guardian;
+        if (createUserDto.getGuardian().getId() != null) {
+            guardian = guardianRepository.findById(createUserDto.getGuardian().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + createUserDto.getGuardian().getId()));
+
+            guardian.setFullName(createUserDto.getGuardian().getFullName());
+            guardian.setPhoneNumber(createUserDto.getGuardian().getPhoneNumber());
+            guardian.setGuardianType(guardianType);
+
+            if (createUserDto.getGuardian().getAddress() != null) {
+                guardian.setAddress(addressMapper.toEntity(createUserDto.getGuardian().getAddress()));
+            }
+            profile.setGuardian(guardian);
+        } else {
+            guardian = guardianMapper.toEntity(createUserDto.getGuardian());
+            guardian.setGuardianType(guardianType);
+        }
 
         profile.setUser(user);
         profile.setBedRoom(bedRoom);

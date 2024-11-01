@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +37,9 @@ public class Guardian {
     @ManyToOne
     @JoinColumn(name = "guardian_type_id", nullable = false)
     GuardianType guardianType;
+
+    @OneToMany(mappedBy = "guardian")
+    private Set<Profile> profiles = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
