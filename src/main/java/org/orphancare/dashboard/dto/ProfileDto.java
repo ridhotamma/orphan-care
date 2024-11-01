@@ -34,7 +34,7 @@ public class ProfileDto {
     private AddressDto address;
 
     @Valid
-    private GuardianDto guardian;
+    private GuardianDto.Response guardian;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
     private String phoneNumber;

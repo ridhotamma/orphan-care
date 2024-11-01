@@ -31,5 +31,6 @@ public class GuardianDto {
         private String phoneNumber;
         private AddressDto address;
         private GuardianTypeDto guardianType;
+        private UUID guardianTypeId;
     }
 }

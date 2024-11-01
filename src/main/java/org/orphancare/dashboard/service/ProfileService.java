@@ -58,7 +58,7 @@ public class ProfileService {
         profile.setBedRoom(bedRoom);
         profile.setCareTaker(profileDto.isCareTaker());
         profile.setAlumni(profileDto.isAlumni());
-        profile.setGuardian(guardianMapper.toEntity(profileDto.getGuardian()));
+        profile.setGuardian(guardianMapper.toEntityFromResponse(profileDto.getGuardian()));
 
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);
