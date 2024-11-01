@@ -79,7 +79,7 @@ public class Profile {
     private String nikNumber;
 
     @Size(min = 16, max = 16)
-    @Column(unique = true)
+    @Column()
     @NoWhiteSpace
     private String kkNumber;
 

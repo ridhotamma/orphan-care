@@ -5,11 +5,12 @@ import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.*;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
-import org.orphancare.dashboard.exception.UserAlreadyExistsException;
+import org.orphancare.dashboard.exception.DataAlreadyExistsException;
 import org.orphancare.dashboard.mapper.AddressMapper;
 import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.mapper.UserMapper;
 import org.orphancare.dashboard.repository.BedRoomRepository;
+import org.orphancare.dashboard.repository.ProfileRepository;
 import org.orphancare.dashboard.repository.UserRepository;
 import org.orphancare.dashboard.specification.UserSpecification;
 import org.orphancare.dashboard.util.RequestUtil;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final BedRoomRepository bedRoomRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -40,10 +42,14 @@ public class UserService {
 
     public UserDto.UserWithProfileDto createUser(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail())) {
-            throw new UserAlreadyExistsException("Email is already in use");
+            throw new DataAlreadyExistsException("Email is already in use");
         }
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
-            throw new UserAlreadyExistsException("Username is already in use");
+            throw new DataAlreadyExistsException("Username is already in use");
+        }
+
+        if (profileRepository.existsByKkNumber(createUserDto.getKkNumber())) {
+            throw new DataAlreadyExistsException("KK Number is already in use");
         }
 
         BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
@@ -79,12 +85,12 @@ public class UserService {
 
         if (updateUserDto.getEmail() != null && !existingUser.getEmail().equals(updateUserDto.getEmail())
                 && userRepository.existsByEmail(updateUserDto.getEmail())) {
-            throw new UserAlreadyExistsException("Email is already in use");
+            throw new DataAlreadyExistsException("Email is already in use");
         }
 
         if (updateUserDto.getUsername() != null && !existingUser.getUsername().equals(updateUserDto.getUsername())
                 && userRepository.existsByUsername(updateUserDto.getUsername())) {
-            throw new UserAlreadyExistsException("Username is already in use");
+            throw new DataAlreadyExistsException("Username is already in use");
         }
 
         userMapper.updateUserFromDto(updateUserDto, existingUser);
