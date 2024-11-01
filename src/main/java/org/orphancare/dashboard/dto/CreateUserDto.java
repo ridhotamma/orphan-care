@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.orphancare.dashboard.entity.Gender;
+import org.orphancare.dashboard.entity.Profile;
 import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
 import org.orphancare.dashboard.validation.ValidRoles;
@@ -70,4 +71,10 @@ public class CreateUserDto {
     private boolean isAlumni = false;
 
     private String profilePicture;
+
+    private String nikNumber;
+
+    private String kkNumber;
+
+    private Profile.OrphanType orphanType;
 }

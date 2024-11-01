@@ -63,6 +63,9 @@ public class UserService {
         profile.setGuardian(guardian);
         profile.setCareTaker(createUserDto.isCareTaker());
         profile.setAlumni(createUserDto.isAlumni());
+        profile.setKkNumber(createUserDto.getKkNumber());
+        profile.setNikNumber(createUserDto.getNikNumber());
+        profile.setOrphanType(createUserDto.getOrphanType());
 
         user.setProfile(profile);
 
