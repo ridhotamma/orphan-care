@@ -17,7 +17,7 @@ public interface ProfileRepository extends JpaRepository<Profile, UUID> {
 
     Optional<Profile> findByUserId(UUID userId);
 
-    boolean existsByKkNumber(String KkNumber);
+    boolean existsByNikNumber(String nikNumber);
 
     @Query("SELECT COUNT(p) FROM Profile p JOIN p.user u WHERE p.gender = :gender AND p.isCareTaker = false AND p.isAlumni = false")
     long countStudentsByGender(Gender gender);

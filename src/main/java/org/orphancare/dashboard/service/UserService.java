@@ -50,8 +50,8 @@ public class UserService {
             throw new DataAlreadyExistsException("Username is already in use");
         }
 
-        if (profileRepository.existsByKkNumber(createUserDto.getKkNumber())) {
-            throw new DataAlreadyExistsException("KK Number is already in use");
+        if (profileRepository.existsByNikNumber(createUserDto.getNikNumber())) {
+            throw new DataAlreadyExistsException("Nik Number is already in use");
         }
 
 

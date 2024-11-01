@@ -45,12 +45,12 @@ public class ProfileDto {
     @ValidGender
     private String gender;
 
-    @Pattern(regexp = "^\\d{16}$", message = "NIK must be exactly 16 digits")
-    @NoWhiteSpace
+    @NotBlank
+    @NotNull
     private String nikNumber;
 
-    @Pattern(regexp = "^\\d{16}$", message = "KK number must be exactly 16 digits")
-    @NoWhiteSpace
+    @NotBlank
+    @NotNull
     private String kkNumber;
 
     @NotNull
