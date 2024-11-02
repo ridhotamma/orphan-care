@@ -38,68 +38,88 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
 
-        BedRoom bedRoom = null;
+        Profile profile = profileRepository.findByUser(user).orElse(new Profile());
+
         if (profileDto.getBedRoomId() != null) {
-            bedRoom = bedRoomRepository.findById(profileDto.getBedRoomId())
+            BedRoom bedRoom = bedRoomRepository.findById(profileDto.getBedRoomId())
                     .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getBedRoomId()));
+            profile.setBedRoom(bedRoom);
         }
 
-        GuardianType guardianRelationship = null;
         if (profileDto.getGuardianTypeId() != null) {
-            guardianRelationship = guardianTypeRepository.findById(profileDto.getGuardianTypeId())
+            GuardianType guardianRelationship = guardianTypeRepository.findById(profileDto.getGuardianTypeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + profileDto.getGuardianTypeId()));
+            profile.setGuardianRelationship(guardianRelationship);
         }
 
-        Guardian guardian;
         if (profileDto.getGuardian() != null) {
+            Guardian guardian;
             if (profileDto.getGuardian().getId() != null) {
                 guardian = guardianRepository.findById(profileDto.getGuardian().getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + profileDto.getGuardian().getId()));
 
-                guardian.setFullName(profileDto.getGuardian().getFullName());
-                guardian.setPhoneNumber(profileDto.getGuardian().getPhoneNumber());
-
-                if (profileDto.getGuardian().getAddress() != null) {
-                    Address guardianAddress = addressMapper.toEntity(profileDto.getGuardian().getAddress());
-                    guardian.setAddress(guardianAddress);
+                if (profileDto.getGuardian().getFullName() != null) {
+                    guardian.setFullName(profileDto.getGuardian().getFullName());
+                }
+                if (profileDto.getGuardian().getPhoneNumber() != null) {
+                    guardian.setPhoneNumber(profileDto.getGuardian().getPhoneNumber());
                 }
             } else {
                 guardian = guardianMapper.toEntityFromResponse(profileDto.getGuardian());
-                if (profileDto.getGuardian().getAddress() != null) {
-                    Address guardianAddress = addressMapper.toEntity(profileDto.getGuardian().getAddress());
-                    guardian.setAddress(guardianAddress);
-                }
             }
+
+            if (profileDto.getGuardian().getAddress() != null) {
+                Address guardianAddress = addressMapper.toEntity(profileDto.getGuardian().getAddress());
+                guardian.setAddress(guardianAddress);
+            }
+
             guardian = guardianRepository.save(guardian);
-        } else {
-            guardian = null;
+            profile.setGuardian(guardian);
         }
 
-        Profile profile = profileRepository.findByUser(user).orElse(new Profile());
+        if (profileDto.getFullName() != null) {
+            profile.setFullName(profileDto.getFullName());
+        }
+        if (profileDto.getProfilePicture() != null) {
+            profile.setProfilePicture(profileDto.getProfilePicture());
+        }
+        if (profileDto.getBirthday() != null) {
+            profile.setBirthday(profileDto.getBirthday());
+        }
+        if (profileDto.getJoinDate() != null) {
+            profile.setJoinDate(profileDto.getJoinDate());
+        }
+        if (profileDto.getLeaveDate() != null) {
+            profile.setLeaveDate(profileDto.getLeaveDate());
+        }
+        if (profileDto.getBio() != null) {
+            profile.setBio(profileDto.getBio());
+        }
+        if (profileDto.getPhoneNumber() != null) {
+            profile.setPhoneNumber(profileDto.getPhoneNumber());
+        }
+        if (profileDto.getGender() != null) {
+            profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
+        }
+        if (profileDto.getNikNumber() != null) {
+            profile.setNikNumber(profileDto.getNikNumber());
+        }
+        if (profileDto.getKkNumber() != null) {
+            profile.setKkNumber(profileDto.getKkNumber());
+        }
+        if (profileDto.getOrphanType() != null) {
+            profile.setOrphanType(profileDto.getOrphanType());
+        }
 
-        profile.setFullName(profileDto.getFullName());
-        profile.setProfilePicture(profileDto.getProfilePicture());
-        profile.setBirthday(profileDto.getBirthday());
-        profile.setJoinDate(profileDto.getJoinDate());
-        profile.setLeaveDate(profileDto.getLeaveDate());
-        profile.setBio(profileDto.getBio());
-        profile.setPhoneNumber(profileDto.getPhoneNumber());
-        profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
+        profile.setCareTaker(profileDto.isCareTaker());
+        profile.setAlumni(profileDto.isAlumni());
+
         profile.setUser(user);
 
         if (profileDto.getAddress() != null) {
             Address profileAddress = addressMapper.toEntity(profileDto.getAddress());
             profile.setAddress(profileAddress);
         }
-
-        profile.setBedRoom(bedRoom);
-        profile.setCareTaker(profileDto.isCareTaker());
-        profile.setAlumni(profileDto.isAlumni());
-        profile.setNikNumber(profileDto.getNikNumber());
-        profile.setKkNumber(profileDto.getKkNumber());
-        profile.setOrphanType(profileDto.getOrphanType());
-        profile.setGuardianRelationship(guardianRelationship);
-        profile.setGuardian(guardian);
 
         Profile savedProfile = profileRepository.save(profile);
         return profileMapper.toDto(savedProfile);

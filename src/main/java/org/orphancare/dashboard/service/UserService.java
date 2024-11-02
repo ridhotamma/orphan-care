@@ -60,8 +60,11 @@ public class UserService {
                     .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + createUserDto.getGuardianTypeId()));
         }
 
-        BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
-                .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
+        BedRoom bedRoom = null;
+        if (createUserDto.getBedRoomId() != null) {
+            bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + createUserDto.getBedRoomId()));
+        }
 
         Guardian guardian;
         if (createUserDto.getGuardian() != null && createUserDto.getGuardian().getId() != null) {

@@ -27,7 +27,6 @@ public class ProfileDto {
     private boolean isCareTaker;
     private BedRoomDto.ShortResponse bedRoom;
 
-    @NotNull
     private UUID bedRoomId;
 
     @NotBlank

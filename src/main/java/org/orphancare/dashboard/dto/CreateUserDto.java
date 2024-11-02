@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.orphancare.dashboard.entity.Gender;
 import org.orphancare.dashboard.entity.Profile;
+import org.orphancare.dashboard.entity.RoleType;
+import org.orphancare.dashboard.util.RandomGeneratorUtil;
 import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
 import org.orphancare.dashboard.validation.ValidRoles;
@@ -17,36 +19,28 @@ import java.util.UUID;
 @Data
 public class CreateUserDto {
     @Email
-    @NotBlank
-    private String email;
+    private String email = RandomGeneratorUtil.generateEmail();
 
     @Size(min = 8, max = 255)
     @ValidPassword
-    private String password;
+    private String password = RandomGeneratorUtil.generatePassword(12);;
 
     @Size(max = 255)
-    @NotBlank
     @NoWhiteSpace
-    private String username;
+    private String username = RandomGeneratorUtil.generateUsername(8);
 
-    @NotEmpty
-    @NotNull
     @ValidRoles
-    private Set<String> roles;
+    private Set<String> roles = Set.of(RoleType.ROLE_USER.toString());
 
-    @NotNull
-    private boolean active;
+    private boolean active = false;
 
     @NotBlank
     private String fullName;
 
-    @NotNull
     private LocalDate birthday;
 
-    @NotNull
     private LocalDate joinDate;
 
-    @NotBlank
     private String bio;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
@@ -58,7 +52,6 @@ public class CreateUserDto {
     @Valid
     private AddressDto address;
 
-    @NotNull
     private UUID bedRoomId;
 
     @Valid
@@ -66,10 +59,8 @@ public class CreateUserDto {
 
     private UUID guardianTypeId;
 
-    @NotNull
     private boolean isCareTaker = false;
 
-    @NotNull
     private boolean isAlumni = false;
 
     private String profilePicture;
@@ -82,5 +73,5 @@ public class CreateUserDto {
     @Nullable
     private String kkNumber;
 
-    private Profile.OrphanType orphanType;
+    private Profile.OrphanType orphanType = Profile.OrphanType.POOR;
 }
