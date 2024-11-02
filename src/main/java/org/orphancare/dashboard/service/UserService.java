@@ -1,6 +1,7 @@
 package org.orphancare.dashboard.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.math3.analysis.function.Add;
 import org.apache.coyote.BadRequestException;
 import org.orphancare.dashboard.dto.*;
 import org.orphancare.dashboard.entity.*;
@@ -76,7 +77,7 @@ public class UserService {
             }
         } else {
             guardian = guardianMapper.toEntity(createUserDto.getGuardian());
-            if (createUserDto.getGuardian().getAddress() != null) {
+            if (createUserDto.getGuardian() != null && createUserDto.getGuardian().getAddress() != null) {
                 Address guardianAddress = addressMapper.toEntity(createUserDto.getGuardian().getAddress());
                 guardian.setAddress(guardianAddress);
             }
@@ -88,7 +89,11 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         user.setActive(createUserDto.isActive());
 
-        Address profileAddress = addressMapper.toEntity(createUserDto.getAddress());
+        Address profileAddress = null;
+        if (createUserDto.getAddress() != null) {
+            profileAddress = addressMapper.toEntity(createUserDto.getAddress());
+        }
+
         Profile profile = userMapper.toProfileEntity(createUserDto);
         profile.setUser(user);
         profile.setBedRoom(bedRoom);
