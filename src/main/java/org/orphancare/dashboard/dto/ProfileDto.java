@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,6 @@ import lombok.Data;
 import org.orphancare.dashboard.entity.Gender;
 import org.orphancare.dashboard.entity.GuardianType;
 import org.orphancare.dashboard.entity.Profile;
-import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidGender;
 
 import java.time.LocalDate;
@@ -51,15 +51,14 @@ public class ProfileDto {
     @ValidGender
     private String gender;
 
-    @NotBlank
-    @NotNull
+    @Pattern(regexp = "^\\d{16}$", message = "Nik number should be 16 digit")
+    @Nullable
     private String nikNumber;
 
-    @NotBlank
-    @NotNull
+    @Pattern(regexp = "^\\d{16}$", message = "Kk number should be 16 digit")
+    @Nullable
     private String kkNumber;
 
-    @NotNull
     private Profile.OrphanType orphanType;
 
     private String orphanTypeText;
