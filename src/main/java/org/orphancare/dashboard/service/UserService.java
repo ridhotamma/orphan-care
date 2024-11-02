@@ -63,7 +63,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
 
         Guardian guardian;
-        if (createUserDto.getGuardian().getId() != null) {
+        if (createUserDto.getGuardian() != null && createUserDto.getGuardian().getId() != null) {
             guardian = guardianRepository.findById(createUserDto.getGuardian().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + createUserDto.getGuardian().getId()));
 
