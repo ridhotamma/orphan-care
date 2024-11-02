@@ -72,8 +72,10 @@ public class CreateUserDto {
 
     private String profilePicture;
 
+    @Size(min = 16, max = 16, message = "Nik number should be 16 digit")
     private String nikNumber;
 
+    @Size(min = 16, max = 16, message = "Kk number should be 16 digit")
     private String kkNumber;
 
     private Profile.OrphanType orphanType;
