@@ -65,7 +65,6 @@ public class CreateUserDto {
     @Valid
     private GuardianDto guardian;
 
-    @NotNull
     private UUID guardianTypeId;
 
     @NotNull

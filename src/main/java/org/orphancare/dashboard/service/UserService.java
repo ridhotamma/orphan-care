@@ -52,8 +52,12 @@ public class UserService {
             throw new DataAlreadyExistsException("Nik Number is already in use");
         }
 
-        GuardianType guardianRelationship = guardianTypeRepository.findById(createUserDto.getGuardianTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + createUserDto.getGuardianTypeId()));
+        GuardianType guardianRelationship = null;
+
+        if (createUserDto.getGuardianTypeId() != null) {
+            guardianRelationship = guardianTypeRepository.findById(createUserDto.getGuardianTypeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + createUserDto.getGuardianTypeId()));
+        }
 
         BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));

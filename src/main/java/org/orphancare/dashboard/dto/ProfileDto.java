@@ -39,7 +39,6 @@ public class ProfileDto {
     @Valid
     private GuardianDto.Response guardian;
 
-    @NotNull
     private UUID guardianTypeId;
 
     private GuardianType guardianRelationship;
