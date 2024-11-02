@@ -73,14 +73,10 @@ public class Profile {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isAlumni = false;
 
-    @Size(min = 16, max = 16)
     @Column()
-    @NoWhiteSpace
     private String nikNumber;
 
-    @Size(min = 16, max = 16)
     @Column()
-    @NoWhiteSpace
     private String kkNumber;
 
     @Enumerated(EnumType.STRING)

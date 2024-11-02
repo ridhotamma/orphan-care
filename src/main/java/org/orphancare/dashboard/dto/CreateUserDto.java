@@ -1,5 +1,6 @@
 package org.orphancare.dashboard.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -72,10 +73,12 @@ public class CreateUserDto {
 
     private String profilePicture;
 
-    @Size(min = 16, max = 16, message = "Nik number should be 16 digit")
+    @Pattern(regexp = "^\\d{16}$", message = "Nik number should be 16 digit")
+    @Nullable
     private String nikNumber;
 
-    @Size(min = 16, max = 16, message = "Kk number should be 16 digit")
+    @Pattern(regexp = "^\\d{16}$", message = "Kk number should be 16 digit")
+    @Nullable
     private String kkNumber;
 
     private Profile.OrphanType orphanType;
