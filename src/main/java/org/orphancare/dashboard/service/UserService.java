@@ -83,7 +83,9 @@ public class UserService {
             }
         }
 
-        guardian = guardianRepository.save(guardian);
+        if (guardian != null) {
+            guardian = guardianRepository.save(guardian);
+        }
 
         User user = userMapper.toEntity(createUserDto);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));

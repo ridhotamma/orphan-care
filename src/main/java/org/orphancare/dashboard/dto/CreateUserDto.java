@@ -55,7 +55,6 @@ public class CreateUserDto {
     @NotNull
     private Gender gender;
 
-    @NotNull
     @Valid
     private AddressDto address;
 
