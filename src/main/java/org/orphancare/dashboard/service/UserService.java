@@ -52,9 +52,6 @@ public class UserService {
             throw new DataAlreadyExistsException("Nik Number is already in use");
         }
 
-        GuardianType guardianType = guardianTypeRepository.findById(createUserDto.getGuardian().getGuardianTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("guardianType not found with id " + createUserDto.getGuardian().getGuardianTypeId()));
-
         BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
 
@@ -72,7 +69,6 @@ public class UserService {
 
             guardian.setFullName(createUserDto.getGuardian().getFullName());
             guardian.setPhoneNumber(createUserDto.getGuardian().getPhoneNumber());
-            guardian.setGuardianType(guardianType);
 
             if (createUserDto.getGuardian().getAddress() != null) {
                 guardian.setAddress(addressMapper.toEntity(createUserDto.getGuardian().getAddress()));
@@ -80,7 +76,6 @@ public class UserService {
             profile.setGuardian(guardian);
         } else {
             guardian = guardianMapper.toEntity(createUserDto.getGuardian());
-            guardian.setGuardianType(guardianType);
         }
 
         profile.setUser(user);

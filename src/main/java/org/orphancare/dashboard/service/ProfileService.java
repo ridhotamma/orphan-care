@@ -74,16 +74,13 @@ public class ProfileService {
             guardian = guardianRepository.findById(profileDto.getGuardian().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + profileDto.getGuardian().getId()));
 
-            // Update guardian details if provided
             guardian.setFullName(profileDto.getGuardian().getFullName());
             guardian.setPhoneNumber(profileDto.getGuardian().getPhoneNumber());
-            guardian.setGuardianType(guardianType);
 
             if (profileDto.getGuardian().getAddress() != null) {
                 guardian.setAddress(addressMapper.toEntity(profileDto.getGuardian().getAddress()));
             }
         } else {
-            // Create new guardian if no ID provided
             guardian = guardianMapper.toEntityFromResponse(profileDto.getGuardian());
         }
         profile.setGuardian(guardian);
