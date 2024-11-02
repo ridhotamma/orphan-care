@@ -34,10 +34,6 @@ public class Guardian {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @ManyToOne
-    @JoinColumn(name = "guardian_type_id", nullable = false)
-    GuardianType guardianType;
-
     @OneToMany(mappedBy = "guardian")
     private Set<Profile> profiles = new HashSet<>();
 

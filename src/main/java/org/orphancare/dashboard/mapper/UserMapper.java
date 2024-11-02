@@ -23,7 +23,7 @@ public interface UserMapper {
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.bedRoom.bedRoomType.id", target = "profile.bedRoom.bedRoomTypeId")
     @Mapping(source = "profile.bedRoom.id", target = "profile.bedRoomId")
-    @Mapping(source = "profile.guardian.guardianType.id", target = "profile.guardian.guardianTypeId")
+    @Mapping(source = "profile.guardianRelationship.id", target = "profile.guardianTypeId")
     UserDto.UserWithProfileDto toUserWithProfileDto(User user);
 
     @Mapping(source = "profile.fullName", target = "fullName")
@@ -39,5 +39,6 @@ public interface UserMapper {
     @Mapping(source = "createUserDto.gender", target = "gender")
     @Mapping(source = "createUserDto.careTaker", target = "careTaker")
     @Mapping(source = "createUserDto.alumni", target = "alumni")
+    @Mapping(source = "createUserDto.guardianTypeId", target = "guardianRelationship.id")
     Profile toProfileEntity(CreateUserDto createUserDto);
 }

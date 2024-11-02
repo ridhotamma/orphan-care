@@ -63,9 +63,13 @@ public class Profile {
     @JoinColumn(name = "bedroom_id")
     private BedRoom bedRoom;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "guardian_id")
     private Guardian guardian;
+
+    @ManyToOne
+    @JoinColumn(name = "guardian_type_id")
+    private GuardianType guardianRelationship;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isCareTaker = false;

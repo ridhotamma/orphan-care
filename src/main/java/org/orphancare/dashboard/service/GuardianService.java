@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.orphancare.dashboard.dto.GuardianDto;
 import org.orphancare.dashboard.dto.PaginatedResponse;
 import org.orphancare.dashboard.entity.Guardian;
-import org.orphancare.dashboard.entity.GuardianType;
 import org.orphancare.dashboard.exception.ResourceNotFoundException;
 import org.orphancare.dashboard.mapper.GuardianMapper;
 import org.orphancare.dashboard.repository.GuardianRepository;
-import org.orphancare.dashboard.repository.GuardianTypeRepository;
 import org.orphancare.dashboard.specification.GuardianSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,15 +26,10 @@ import java.util.stream.Collectors;
 public class GuardianService {
 
     private final GuardianRepository guardianRepository;
-    private final GuardianTypeRepository guardianTypeRepository;
     private final GuardianMapper guardianMapper;
 
     public GuardianDto.Response createGuardian(GuardianDto guardianDto) {
-        GuardianType guardianType = guardianTypeRepository.findById(guardianDto.getGuardianTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + guardianDto.getGuardianTypeId()));
-
         Guardian guardian = guardianMapper.toEntity(guardianDto);
-        guardian.setGuardianType(guardianType);
 
         Guardian savedGuardian = guardianRepository.save(guardian);
         return guardianMapper.toResponseDto(savedGuardian);
@@ -46,11 +39,8 @@ public class GuardianService {
         Guardian guardian = guardianRepository.findById(guardianId)
                 .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + guardianId));
 
-        GuardianType guardianType = guardianTypeRepository.findById(guardianDto.getGuardianTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + guardianDto.getGuardianTypeId()));
 
         guardianMapper.updateGuardianFromDto(guardianDto, guardian);
-        guardian.setGuardianType(guardianType);
 
         Guardian updatedGuardian = guardianRepository.save(guardian);
         return guardianMapper.toResponseDto(updatedGuardian);

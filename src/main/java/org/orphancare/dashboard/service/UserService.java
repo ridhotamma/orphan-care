@@ -47,21 +47,16 @@ public class UserService {
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
             throw new DataAlreadyExistsException("Username is already in use");
         }
-
         if (createUserDto.getNikNumber() != null &&
                 profileRepository.existsByNikNumber(createUserDto.getNikNumber())) {
             throw new DataAlreadyExistsException("Nik Number is already in use");
         }
 
+        GuardianType guardianRelationship = guardianTypeRepository.findById(createUserDto.getGuardianTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + createUserDto.getGuardianTypeId()));
+
         BedRoom bedRoom = bedRoomRepository.findById(createUserDto.getBedRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id " + createUserDto.getBedRoomId()));
-
-        User user = userMapper.toEntity(createUserDto);
-        user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        user.setActive(createUserDto.isActive());
-
-        Address address = addressMapper.toEntity(createUserDto.getAddress());
-        Profile profile = userMapper.toProfileEntity(createUserDto);
 
         Guardian guardian;
         if (createUserDto.getGuardian().getId() != null) {
@@ -72,17 +67,30 @@ public class UserService {
             guardian.setPhoneNumber(createUserDto.getGuardian().getPhoneNumber());
 
             if (createUserDto.getGuardian().getAddress() != null) {
-                guardian.setAddress(addressMapper.toEntity(createUserDto.getGuardian().getAddress()));
+                Address guardianAddress = addressMapper.toEntity(createUserDto.getGuardian().getAddress());
+                guardian.setAddress(guardianAddress);
             }
-            profile.setGuardian(guardian);
         } else {
             guardian = guardianMapper.toEntity(createUserDto.getGuardian());
+            if (createUserDto.getGuardian().getAddress() != null) {
+                Address guardianAddress = addressMapper.toEntity(createUserDto.getGuardian().getAddress());
+                guardian.setAddress(guardianAddress);
+            }
         }
 
+        guardian = guardianRepository.save(guardian);
+
+        User user = userMapper.toEntity(createUserDto);
+        user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+        user.setActive(createUserDto.isActive());
+
+        Address profileAddress = addressMapper.toEntity(createUserDto.getAddress());
+        Profile profile = userMapper.toProfileEntity(createUserDto);
         profile.setUser(user);
         profile.setBedRoom(bedRoom);
-        profile.setAddress(address);
-        profile.setGuardian(guardian);
+        profile.setAddress(profileAddress);
+        profile.setGuardian(guardian);  // Set the saved guardian
+        profile.setGuardianRelationship(guardianRelationship);
         profile.setCareTaker(createUserDto.isCareTaker());
         profile.setAlumni(createUserDto.isAlumni());
         profile.setKkNumber(createUserDto.getKkNumber());

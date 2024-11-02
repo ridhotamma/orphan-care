@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -25,9 +24,6 @@ public class GuardianType {
 
     @Column(nullable = false, unique = true)
     String name;
-
-    @OneToMany(mappedBy = "guardianType", cascade = CascadeType.ALL)
-    private Set<Guardian> guardians;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

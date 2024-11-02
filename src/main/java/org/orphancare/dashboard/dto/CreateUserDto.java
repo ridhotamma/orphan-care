@@ -66,6 +66,9 @@ public class CreateUserDto {
     private GuardianDto guardian;
 
     @NotNull
+    private UUID guardianTypeId;
+
+    @NotNull
     private boolean isCareTaker = false;
 
     @NotNull

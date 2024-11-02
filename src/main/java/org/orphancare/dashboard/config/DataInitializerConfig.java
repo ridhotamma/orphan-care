@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -48,14 +49,18 @@ public class DataInitializerConfig implements CommandLineRunner {
     private String adminGender;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void run(String... args) {
-        initializeAdminUser();
-        initializeUnits();
-        initializeDocumentTypes();
-        initializeBedRoomTypes();
-        initializeGuardianTypes();
-        initializeDonationTypes();
+        try {
+            initializeGuardianTypes();
+            initializeAdminUser();
+            initializeUnits();
+            initializeDocumentTypes();
+            initializeBedRoomTypes();
+            initializeDonationTypes();
+        } catch (Exception e) {
+            System.out.println("Error during initialization: " + e.getMessage());
+        }
     }
 
     private void initializeAdminUser() {

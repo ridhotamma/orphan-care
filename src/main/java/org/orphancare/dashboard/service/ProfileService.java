@@ -44,13 +44,39 @@ public class ProfileService {
                     .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getBedRoomId()));
         }
 
-        GuardianType guardianType = null;
-        if (profileDto.getGuardian().getGuardianTypeId() != null) {
-            guardianType = guardianTypeRepository.findById(profileDto.getGuardian().getGuardianTypeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Bed room not found with id " + profileDto.getGuardian().getGuardianTypeId()));
+        GuardianType guardianRelationship = null;
+        if (profileDto.getGuardianTypeId() != null) {
+            guardianRelationship = guardianTypeRepository.findById(profileDto.getGuardianTypeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Guardian type not found with id " + profileDto.getGuardianTypeId()));
+        }
+
+        Guardian guardian;
+        if (profileDto.getGuardian() != null) {
+            if (profileDto.getGuardian().getId() != null) {
+                guardian = guardianRepository.findById(profileDto.getGuardian().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + profileDto.getGuardian().getId()));
+
+                guardian.setFullName(profileDto.getGuardian().getFullName());
+                guardian.setPhoneNumber(profileDto.getGuardian().getPhoneNumber());
+
+                if (profileDto.getGuardian().getAddress() != null) {
+                    Address guardianAddress = addressMapper.toEntity(profileDto.getGuardian().getAddress());
+                    guardian.setAddress(guardianAddress);
+                }
+            } else {
+                guardian = guardianMapper.toEntityFromResponse(profileDto.getGuardian());
+                if (profileDto.getGuardian().getAddress() != null) {
+                    Address guardianAddress = addressMapper.toEntity(profileDto.getGuardian().getAddress());
+                    guardian.setAddress(guardianAddress);
+                }
+            }
+            guardian = guardianRepository.save(guardian);
+        } else {
+            guardian = null;
         }
 
         Profile profile = profileRepository.findByUser(user).orElse(new Profile());
+
         profile.setFullName(profileDto.getFullName());
         profile.setProfilePicture(profileDto.getProfilePicture());
         profile.setBirthday(profileDto.getBirthday());
@@ -60,29 +86,19 @@ public class ProfileService {
         profile.setPhoneNumber(profileDto.getPhoneNumber());
         profile.setGender(Gender.valueOf(profileDto.getGender().toUpperCase()));
         profile.setUser(user);
-        profile.setAddress(addressMapper.toEntity(profileDto.getAddress()));
+
+        if (profileDto.getAddress() != null) {
+            Address profileAddress = addressMapper.toEntity(profileDto.getAddress());
+            profile.setAddress(profileAddress);
+        }
+
         profile.setBedRoom(bedRoom);
         profile.setCareTaker(profileDto.isCareTaker());
         profile.setAlumni(profileDto.isAlumni());
         profile.setNikNumber(profileDto.getNikNumber());
         profile.setKkNumber(profileDto.getKkNumber());
         profile.setOrphanType(profileDto.getOrphanType());
-
-        // Handle guardian relationship
-        Guardian guardian;
-        if (profileDto.getGuardian().getId() != null) {
-            guardian = guardianRepository.findById(profileDto.getGuardian().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Guardian not found with id " + profileDto.getGuardian().getId()));
-
-            guardian.setFullName(profileDto.getGuardian().getFullName());
-            guardian.setPhoneNumber(profileDto.getGuardian().getPhoneNumber());
-
-            if (profileDto.getGuardian().getAddress() != null) {
-                guardian.setAddress(addressMapper.toEntity(profileDto.getGuardian().getAddress()));
-            }
-        } else {
-            guardian = guardianMapper.toEntityFromResponse(profileDto.getGuardian());
-        }
+        profile.setGuardianRelationship(guardianRelationship);
         profile.setGuardian(guardian);
 
         Profile savedProfile = profileRepository.save(profile);

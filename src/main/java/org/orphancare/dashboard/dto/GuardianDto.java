@@ -19,9 +19,6 @@ public class GuardianDto {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
     private String phoneNumber;
 
-    @NotNull
-    private UUID guardianTypeId;
-
     private AddressDto address;
 
     @Data
@@ -35,10 +32,5 @@ public class GuardianDto {
         private String phoneNumber;
 
         private AddressDto address;
-
-        private GuardianTypeDto guardianType;
-
-        @NotNull
-        private UUID guardianTypeId;
     }
 }
