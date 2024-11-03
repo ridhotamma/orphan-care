@@ -109,9 +109,11 @@ public class BedRoomService {
     }
 
     public void deleteBedRoom(UUID id) {
-        if (!bedRoomRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Bed room not found with id: " + id);
-        }
-        bedRoomRepository.deleteById(id);
+        BedRoom bedRoom = bedRoomRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Bedroom not found with id: " + id));
+
+        bedRoom.setProfiles(null);
+
+        bedRoomRepository.delete(bedRoom);
     }
 }
