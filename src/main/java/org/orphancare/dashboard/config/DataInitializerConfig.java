@@ -73,6 +73,7 @@ public class DataInitializerConfig implements CommandLineRunner {
             user.setPassword(passwordEncoder.encode(adminPassword));
             user.setUsername(adminUsername);
             user.setActive(true);
+            user.setSuperUser(true);
 
             Set<RoleType> roles = new HashSet<>();
             roles.add(RoleType.ROLE_ADMIN);
