@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,13 +28,8 @@ public class Settings {
     @Column(nullable = false)
     private Boolean enableDonationPortal;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "settings_bank_accounts",
-            joinColumns = @JoinColumn(name = "settings_id")
-    )
-    @Column(name = "account_number", nullable = false)
-    private Set<String> bankAccountNumbers = new HashSet<>();
+    @OneToMany(mappedBy = "settings", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BankAccount> bankAccounts = new ArrayList<>();
 
     @Column(nullable = false)
     private String orgPhoneNumber;
@@ -54,5 +49,13 @@ public class Settings {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setBankAccounts(List<BankAccount> bankAccounts) {
+        this.bankAccounts.clear();
+        if (bankAccounts != null) {
+            bankAccounts.forEach(bankAccount -> bankAccount.setSettings(this));
+            this.bankAccounts.addAll(bankAccounts);
+        }
     }
 }
