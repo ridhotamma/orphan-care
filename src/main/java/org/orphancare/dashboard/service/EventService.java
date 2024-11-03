@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,11 +29,24 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
 
-    public PaginatedResponse<List<EventDto>> getAllEvents(String search, Event.EventStatus status, String sortBy, String sortDirection, int page, int perPage) {
+    public PaginatedResponse<List<EventDto>> getAllEvents(
+            String search,
+            Event.EventStatus status,
+            LocalDate startDateFrom,
+            LocalDate startDateTo,
+            LocalDate endDateFrom,
+            LocalDate endDateTo,
+            String sortBy,
+            String sortDirection,
+            int page,
+            int perPage
+    ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
 
-        Specification<Event> spec = EventSpecification.searchEvents(search, status);
+        Specification<Event> spec = EventSpecification.searchEvents(
+                search, status, startDateFrom, startDateTo, endDateFrom, endDateTo
+        );
         Page<Event> eventsPage = eventRepository.findAll(spec, pageable);
 
         List<EventDto> eventDtos = eventsPage.getContent()
