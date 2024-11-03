@@ -181,13 +181,13 @@ public class AnalyticService {
             }
         }
 
-        // Convert to list and add month key
+        // Convert to list with nested data structure
         return formattedData.entrySet().stream()
                 .map(entry -> {
-                    Map<String, Object> monthData = new HashMap<>();
-                    monthData.put("month", entry.getKey());
-                    monthData.putAll(entry.getValue());
-                    return monthData;
+                    Map<String, Object> monthEntry = new HashMap<>();
+                    monthEntry.put("month", entry.getKey());
+                    monthEntry.put("data", entry.getValue());
+                    return monthEntry;
                 })
                 .collect(Collectors.toList());
     }
