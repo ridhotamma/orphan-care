@@ -12,6 +12,7 @@ public class UserDto {
     private String username;
     private Set<String> roles;
     private boolean active;
+    private boolean superUser;
 
     @Data
     public static class UserWithProfileDto {

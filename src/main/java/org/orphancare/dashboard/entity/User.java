@@ -10,9 +10,7 @@ import org.orphancare.dashboard.validation.NoWhiteSpace;
 import org.orphancare.dashboard.validation.ValidPassword;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -56,7 +54,7 @@ public class User {
     private Boolean superUser = false;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Document> documents = new HashSet<>();
+    private List<Document> documents = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
