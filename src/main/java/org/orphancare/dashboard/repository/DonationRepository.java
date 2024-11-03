@@ -1,9 +1,8 @@
 package org.orphancare.dashboard.repository;
 
 import org.orphancare.dashboard.entity.Donation;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Repository
-public interface DonationRepository extends JpaRepository<Donation, UUID> {
-    Page<Donation> findByNameContainingIgnoreCase(String name, Pageable pageable);
-
+public interface DonationRepository extends JpaRepository<Donation, UUID>, JpaSpecificationExecutor<Donation> {
     @Query(value = "SELECT dt.name as \"name\", COUNT(d.id) as amount " +
             "FROM donation_types dt " +
             "LEFT JOIN donations d ON dt.id = d.donation_type_id " +
@@ -67,22 +64,4 @@ public interface DonationRepository extends JpaRepository<Donation, UUID> {
             "LIMIT 10",
             nativeQuery = true)
     List<Map<String, Object>> findLatest10Donations();
-
-    Page<Donation> findByReceivedDateBetweenAndNameContainingIgnoreCase(
-            LocalDate startDate,
-            LocalDate endDate,
-            String name,
-            Pageable pageable
-    );
-
-    Page<Donation> findByReceivedDateBetween(
-            LocalDate startDate,
-            LocalDate endDate,
-            Pageable pageable
-    );
-
-    List<Donation> findByReceivedDateBetweenOrderByReceivedDateDesc(
-            LocalDate startDate,
-            LocalDate endDate
-    );
 }

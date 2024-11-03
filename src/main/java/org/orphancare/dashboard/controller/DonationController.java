@@ -27,11 +27,15 @@ public class DonationController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) UUID donationTypeId,
+            @RequestParam(defaultValue = "receivedDate") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage
     ) {
         PaginatedResponse<List<DonationDto>> donations =
-                donationService.getAllDonations(name, startDate, endDate, page, perPage);
+                donationService.getAllDonations(name, startDate, endDate, donationTypeId,
+                        sortBy, sortDirection, page, perPage);
         return ResponseEntity.ok(donations);
     }
 

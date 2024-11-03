@@ -12,9 +12,11 @@ import org.orphancare.dashboard.mapper.DonationMapper;
 import org.orphancare.dashboard.repository.DonationRepository;
 import org.orphancare.dashboard.repository.DonationTypeRepository;
 import org.orphancare.dashboard.repository.UnitRepository;
+import org.orphancare.dashboard.specification.DonationSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,22 +38,19 @@ public class DonationService {
             String name,
             LocalDate startDate,
             LocalDate endDate,
+            UUID donationTypeId,
+            String sortBy,
+            String sortDirection,
             int page,
             int perPage) {
 
-        Pageable pageable = PageRequest.of(page, perPage);
-        Page<Donation> donationsPage;
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, perPage, sort);
 
-        if (startDate != null && endDate != null) {
-            donationsPage = (name == null || name.isEmpty()) ?
-                    donationRepository.findByReceivedDateBetween(startDate, endDate, pageable) :
-                    donationRepository.findByReceivedDateBetweenAndNameContainingIgnoreCase(
-                            startDate, endDate, name, pageable);
-        } else {
-            donationsPage = (name == null || name.isEmpty()) ?
-                    donationRepository.findAll(pageable) :
-                    donationRepository.findByNameContainingIgnoreCase(name, pageable);
-        }
+        Page<Donation> donationsPage = donationRepository.findAll(
+                DonationSpecification.withSearchCriteria(name, startDate, endDate, donationTypeId),
+                pageable
+        );
 
         List<DonationDto> donationDtos = donationsPage.getContent()
                 .stream()
